@@ -1,0 +1,46 @@
+.toonarmycaptain_name {
+    font-family: 'Andale Mono', terminal, monospace;
+}
+
+.toonarmycaptain_subtitle {
+    font-family: sans-serif;
+    font-style: italic;
+    font-size: smaller;
+}
+
+.top_navbar {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    font-family: sans-serif;
+    overflow: hidden;
+    position: -webkit-sticky; /* Safari */
+    position: sticky;
+    top: 0;
+    z-index: 289;
+
+}
+
+.navbar_item {
+    background: white;
+    display: inline;
+    float: right;
+}
+
+.navbar_link {
+    display: block;
+    color: black;
+    padding: 8px;
+    text-align: center;
+    text-decoration: none;
+    float: right;
+}
+
+.navbar_item .navbar_link:hover {
+    color: white;
+    background-color: black;
+}
+
+.nav_active_page {
+    text-decoration: underline;
+}
