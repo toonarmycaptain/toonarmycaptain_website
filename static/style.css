@@ -45,6 +45,15 @@
     text-decoration: underline;
 }
 
+.navbar_avatar {
+    height: 2em;
+    position: relative;
+    right: -.55em;
+    overflow: hidden;
+    border-radius: 50%;
+    alignment: right;
+}
+
 .home_full_avatar {
     position: relative;
     bottom: -2.4em;

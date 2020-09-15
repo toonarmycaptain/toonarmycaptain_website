@@ -34,6 +34,11 @@
                        href="{{ url_for(nav_url) }}">{{ nav_name }}</a>
                 </li>
             {% endfor %}
+            {% if not 'home' in request.path %}
+                <li class="navbar_item">
+                    <img class="navbar_avatar" src="{{ url_for('static', filename='avatar_full.jpg') }}">
+                </li>
+            {% endif %}
         </ul>
     </nav>
     {% block body %}
