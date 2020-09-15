@@ -39,7 +39,8 @@
             {% endfor %}
             {% if not 'home' in request.path %}
                 <li class="navbar_item">
-                    <img class="navbar_avatar" src="{{ url_for('static', filename='avatar_full.jpg') }}">
+                    <img class="navbar_avatar" src="{{ url_for('static', filename='avatar_full.jpg') }}"
+                         alt="toonarmycaptain avatar - 'Shirtless' by felabba">
                 </li>
             {% endif %}
         </ul>
