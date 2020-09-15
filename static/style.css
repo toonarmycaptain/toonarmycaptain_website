@@ -44,3 +44,11 @@
 .nav_active_page {
     text-decoration: underline;
 }
+
+.home_full_avatar {
+    position: relative;
+    bottom: -2.4em;
+    overflow: hidden;
+    border-radius: 50%;
+    alignment: right;
+}
