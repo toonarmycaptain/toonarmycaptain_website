@@ -9,6 +9,9 @@
     <link rel="shortcut icon"
           type='image/vnd.microsoft.icon'
           href="{{ url_for('static', filename='favicon.ico') }}">
+    <link rel="preload"
+          href="{{ url_for('static', filename='avatar_full.jpg') }}"
+          as="image">
     {% block head %}
         <title>
             {% block title %}{% endblock %} - toonarmycaptain.com
