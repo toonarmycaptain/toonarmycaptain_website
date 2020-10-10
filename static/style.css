@@ -48,6 +48,7 @@ body {
     alignment: right;
 }
 
+
 .home_full_avatar {
     position: relative;
     bottom: -2.25em;
@@ -91,4 +92,18 @@ input[type=text], textarea {
     margin-top: 1.75em;
     text-align: right;
 
+}
+
+.center_text_block {
+    margin-left: 15%;
+    margin-right: 15%;
+
+}
+
+.about_bio {
+    font-family: sans-serif;
+}
+
+.handle {
+    font-family: monospace;
 }
