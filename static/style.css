@@ -1,11 +1,5 @@
-.toonarmycaptain_name {
-    font-family: 'Andale Mono', terminal, monospace;
-}
-
-.toonarmycaptain_subtitle {
-    font-family: sans-serif;
-    font-style: italic;
-    font-size: smaller;
+body {
+    padding: 1%;
 }
 
 .top_navbar {
@@ -56,8 +50,19 @@
 
 .home_full_avatar {
     position: relative;
-    bottom: -2.4em;
+    bottom: -2.25em;
     overflow: hidden;
     border-radius: 50%;
-    alignment: right;
+}
+
+.toonarmycaptain_name {
+    font-family: 'Andale Mono', terminal, monospace;
+}
+
+.toonarmycaptain_subtitle {
+    font-family: sans-serif;
+    font-style: italic;
+    font-size: smaller;
+    top: -1.5em;
+    position: relative;
 }
