@@ -11,7 +11,7 @@ from wtforms.validators import (DataRequired,
                                 Length,
                                 )
 
-from app import contact_message_max_length
+from app import CONTACT_MESSAGE_MAX_LENGTH
 
 
 class ContactForm(FlaskForm):
@@ -30,13 +30,13 @@ class ContactForm(FlaskForm):
                         )
 
     message = TextAreaField(label='Message',
-                            validators=[Length(min=4, max=contact_message_max_length,
+                            validators=[Length(min=4, max=CONTACT_MESSAGE_MAX_LENGTH,
                                                message=f'Message must be between 4 '
-                                                       f'and {contact_message_max_length} '
+                                                       f'and {CONTACT_MESSAGE_MAX_LENGTH} '
                                                        f'characters.',
                                                ),
                                         DataRequired()],
-                            render_kw={'maxlength': contact_message_max_length},
+                            render_kw={'maxlength': CONTACT_MESSAGE_MAX_LENGTH},
                             )
     # recaptcha = RecaptchaField()
     submit = SubmitField('Submit')
