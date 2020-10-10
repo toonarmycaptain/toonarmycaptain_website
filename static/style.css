@@ -66,3 +66,29 @@ body {
     top: -1.5em;
     position: relative;
 }
+
+
+.contact_form {
+    font-family: sans-serif;
+    padding-left: 10%;
+    padding-right: 40%;
+    /*width: 50%;*/
+    display: flex;
+}
+
+.form_element {
+    display: block;
+    margin-top: 1em;
+    clear: both;
+}
+
+input[type=text], textarea {
+    float: right;
+}
+
+
+.contact_form_submit_button {
+    margin-top: 1.75em;
+    text-align: right;
+
+}

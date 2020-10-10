@@ -3,6 +3,8 @@ from flask import Flask, redirect, url_for, render_template
 
 app = Flask(__name__)
 
+from contact.form import ContactForm
+
 
 @app.route('/favicon.ico', methods=['GET'])
 def favicon():
@@ -40,10 +42,29 @@ def blog():
     return render_template('blog.html')
 
 
-@app.route('/contact/', methods=['GET'])
+@app.route('/contact/', methods=['GET', 'POST'])
 def contact():
-    """Contact page."""
-    return render_template('contact.html')
+    """
+    Contact form route.
+
+    Saves data to db, sends text message and email.
+    Returns successful message on form validation, error on error.
+    """
+    form = ContactForm()
+
+    if request.method == 'POST':
+        'receive/validate format'
+        if form.validate_on_submit():
+            'using async:'
+            '    store form contents in databases'
+            '    send myself email'
+            '    send myself text message'
+            '    return template contact with thankyou instead of form'
+            print(form.name, form.message, form.email)
+            return render_template('contact.html', form=form)
+        else:
+            'return template with contact and error message'
+    return render_template('contact.html', form=form)
 
 
 @app.route('/about/', methods=['GET'])
