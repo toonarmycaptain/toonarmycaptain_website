@@ -1,8 +1,32 @@
 """app.py"""
-from flask import Flask, redirect, url_for, render_template
+
+import os
+
+from pathlib import Path
+
+from flask import (Flask,
+                   redirect,
+                   request,
+                   render_template,
+                   url_for,
+                   )
+
+from database import ContactDatabase
 
 app = Flask(__name__)
 
+# Set config:
+SECRET_KEY = os.urandom(64)
+
+app.config['SECRET_KEY'] = SECRET_KEY
+
+CONTACT_MESSAGE_MAX_LENGTH: int = 10000  # characters
+
+# Instantiate/connect to db:
+database_path = Path(Path.cwd(), 'contact.db')
+DATABASE = ContactDatabase(database_path, CONTACT_MESSAGE_MAX_LENGTH)
+
+# Late import to avoid circular import.
 from contact.form import ContactForm
 
 
