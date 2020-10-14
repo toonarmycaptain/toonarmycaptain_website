@@ -75,7 +75,7 @@ class ContactDatabase:
                          );
                          """)
             conn.cursor().execute(
-                """CREATE TABLE IF NOT EXISTS person(
+                f"""CREATE TABLE IF NOT EXISTS message(
                          -- primary key must be INTEGER not INT, NOT NULL is implicit.
                          id INTEGER PRIMARY KEY AUTOINCREMENT,
                          person_id INTEGER NOT NULL,
