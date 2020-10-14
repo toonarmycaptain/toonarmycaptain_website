@@ -80,11 +80,10 @@ class ContactDatabase:
                          id INTEGER PRIMARY KEY AUTOINCREMENT,
                          person_id INTEGER NOT NULL,
                          contents TEXT NOT NULL CHECK(typeof("contents") = 'text' AND
-                                                      length("contents") <= ?
+                                                      length("contents") <= {self._message_max_length}
                                                       ),
                          FOREIGN KEY (person_id) REFERENCES person(id)
                          );
-                         """,
-                (self._message_max_length,))
+                         """)
         conn.commit()
         conn.close()
