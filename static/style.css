@@ -90,6 +90,7 @@ body {
 
 input[type=text], textarea {
     float: right;
+    margin-left: 0.25em;
 }
 
 .contact_form_submit_button {
