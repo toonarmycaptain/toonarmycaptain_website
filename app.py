@@ -20,7 +20,7 @@ app.config.from_object('app_config')
 
 csrf = CSRFProtect(app)
 
-CONTACT_MESSAGE_MAX_LENGTH = app.config['CONTACT_MESSAGE_MAX_LENGTH']
+CONTACT_MESSAGE_MAX_LENGTH: int = app.config['CONTACT_MESSAGE_MAX_LENGTH']
 
 # Instantiate/connect to db:
 database_path = Path(Path.cwd(), 'contact.db')
