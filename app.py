@@ -10,6 +10,8 @@ from flask import (Flask,
                    render_template,
                    url_for,
                    )
+from flask_wtf.csrf import CSRFError, CSRFProtect
+
 
 from database import ContactDatabase
 
@@ -18,7 +20,7 @@ app = Flask(__name__)
 # Set config:
 SECRET_KEY = os.urandom(64)
 
-app.config['SECRET_KEY'] = SECRET_KEY
+csrf = CSRFProtect(app)
 
 CONTACT_MESSAGE_MAX_LENGTH: int = 10000  # characters
 
@@ -95,6 +97,12 @@ def contact():
 def about():
     """About page."""
     return render_template('about.html')
+
+
+@app.errorhandler(CSRFError)
+def handle_csrf_error(e):
+    """Redirects user to requested page in event of CSRF Error."""
+    return redirect(url_for(f'{request.path[1:-1]}'))
 
 
 if __name__ == '__main__':

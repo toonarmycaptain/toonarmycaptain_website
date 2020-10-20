@@ -10,6 +10,7 @@
         {#        # This should have a contact form. Make it send me an email.#}
         {% from "_formhelper_macro.html" import render_field %}
         <form method=post>
+            {{ form.hidden_tag() }}
             <div id='name' class='form_element'>{{ render_field(form.name) }} </div>
             <div id='email' class='form_element'>{{ render_field(form.email) }}</div>
             <div id='message' class='form_element'>{{ render_field(form.message) }}</div>
