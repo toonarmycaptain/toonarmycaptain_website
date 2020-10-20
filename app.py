@@ -81,15 +81,19 @@ def contact():
     if request.method == 'POST':
         'receive/validate format'
         if form.validate_on_submit():
+            'store form contents in databases'
+            DATABASE.store_contact(name=form.name.data,
+                                   email=form.email.data,
+                                   message=form.message.data)
             'using async:'
-            '    store form contents in databases'
             '    send myself email'
             '    send myself text message'
             '    return template contact with thankyou instead of form'
-            print(form.name, form.message, form.email)
             return render_template('contact.html', form=form)
         else:
+            # if form.
             'return template with contact and error message'
+            raise ValueError(form.errors)
     return render_template('contact.html', form=form)
 
 
