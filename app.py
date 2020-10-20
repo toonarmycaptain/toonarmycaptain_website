@@ -1,7 +1,4 @@
 """app.py"""
-
-import os
-
 from pathlib import Path
 
 from flask import (Flask,
@@ -17,12 +14,13 @@ from database import ContactDatabase
 
 app = Flask(__name__)
 
-# Set config:
-SECRET_KEY = os.urandom(64)
+# Load default, runtime config
+app.config.from_object('default_config')
+app.config.from_object('app_config')
 
 csrf = CSRFProtect(app)
 
-CONTACT_MESSAGE_MAX_LENGTH: int = 10000  # characters
+CONTACT_MESSAGE_MAX_LENGTH = app.config['CONTACT_MESSAGE_MAX_LENGTH']
 
 # Instantiate/connect to db:
 database_path = Path(Path.cwd(), 'contact.db')
