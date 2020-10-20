@@ -16,6 +16,7 @@ class ContactDatabase:
             key `id` - INTEGER primary key
             key `name` TEXT <= 255 chars
             key `email` TEXT <= 255 chars
+            key 'alternate_names' TEXT <= 510 chars # comma sep str of alt names.
 
         Table: `message`
             key `id` - INTEGER primary key
@@ -56,8 +57,8 @@ class ContactDatabase:
 
     def _init_db(self):
         """
-        Create empty database.
-        Function could have better name.
+        Create empty database, create missing tables.
+
         :return: None
         """
 
@@ -69,9 +70,12 @@ class ContactDatabase:
                          name TEXT NOT NULL CHECK(typeof("name") = 'text' AND
                                                   length("name") <= 255
                                                   ),
-                         email TEXT NOT NULL CHECK(typeof("name") = 'text' AND
-                                                   length("name") <= 255
-                                                   )
+                         email TEXT UNIQUE NOT NULL CHECK(typeof("name") = 'text' AND
+                                                          length("name") <= 255
+                                                          ),
+                         alternate_names TEXT CHECK(typeof("name") = 'text' AND
+                                                    length("name") <= 510 
+                                                    )                                                   
                          );
                          """)
             conn.cursor().execute(
@@ -89,3 +93,74 @@ class ContactDatabase:
                          """)
         conn.commit()
         conn.close()
+
+    def store_person(self, name: str, email: str) -> int:
+        """
+        Store contact details in database.
+
+        If nonexistent based on email, add contact.
+        If existent email, new name, add alternate name to
+        alternate_names column.
+
+        NB alternate_names column might have spurious commas if user submits
+        data containing commas.
+
+        :param name: str
+        :param email: str
+        :return: int person.id
+        """
+        with self._connection() as conn:
+            cursor = conn.cursor()
+            # Check if email already in db:
+            existing_record = cursor.execute(
+                """SELECT person.id, person.name, person.alternate_names
+                   FROM person
+                   WHERE email=?
+                   LIMIT 1;
+                   """, (email,)).fetchone()
+            if existing_record:  # Update with any new data:
+                person_id, person_name, alternate_names = existing_record
+
+                if name != person_name and (not alternate_names  # Avoid str comparison to None.
+                                            or name not in alternate_names):
+                    alternate_names = name if not alternate_names else f'{alternate_names}, ' + name
+                    cursor.execute(
+                        """UPDATE person
+                           SET alternate_names=?
+                           WHERE person.id=?;
+                           """, (alternate_names, person_id,))
+
+            else:  # Create new record:
+                cursor.execute(
+                    """INSERT INTO person(name, email)
+                       VALUES(?,?);
+                       """, (name, email))
+                person_id = cursor.lastrowid
+        conn.commit()
+        return person_id
+
+    def store_message_text(self, person_id: int, message_text: str) -> None:
+        """
+        Store message text in database.
+
+        :param person_id: int
+        :param message_text: str
+        :return: None
+        """
+        with self._connection() as conn:
+            conn.cursor().execute(
+                """INSERT INTO message(person_id, contents)
+                   VALUES(?,?)
+                   """, (person_id, message_text))
+
+    def store_contact(self, name: str, email: str, message: str) -> int:
+        """
+
+        :param name: str
+        :param email: str
+        :param message: str
+        :return: int
+        """
+        person_id = self.store_person(name, email)
+        self.store_message_text(person_id, message)
+        return person_id
