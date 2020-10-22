@@ -139,19 +139,23 @@ class ContactDatabase:
         conn.commit()
         return person_id
 
-    def store_message_text(self, person_id: int, message_text: str) -> None:
+    def store_message_text(self, person_id: int, message_text: str) -> int:
         """
-        Store message text in database.
+        Store message text in database, return id of message.
 
         :param person_id: int
         :param message_text: str
-        :return: None
+        :return: int: message.id
         """
         with self._connection() as conn:
-            conn.cursor().execute(
+            cursor = conn.cursor()
+            cursor.execute(
                 """INSERT INTO message(person_id, contents)
                    VALUES(?,?)
                    """, (person_id, message_text))
+            message_id = cursor.lastrowid
+        conn.commit()
+        return message_id
 
     def store_contact(self, name: str, email: str, message: str) -> int:
         """
@@ -162,5 +166,5 @@ class ContactDatabase:
         :return: int
         """
         person_id = self.store_person(name, email)
-        self.store_message_text(person_id, message)
-        return person_id
+        message_id = self.store_message_text(person_id, message)
+        return message_id
