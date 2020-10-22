@@ -9,7 +9,6 @@ from flask import (Flask,
                    )
 from flask_wtf.csrf import CSRFError, CSRFProtect
 
-
 from database import ContactDatabase
 
 app = Flask(__name__)
@@ -26,8 +25,9 @@ CONTACT_MESSAGE_MAX_LENGTH: int = app.config['CONTACT_MESSAGE_MAX_LENGTH']
 database_path = Path(Path.cwd(), 'contact.db')
 DATABASE = ContactDatabase(database_path, CONTACT_MESSAGE_MAX_LENGTH)
 
-# Late import to avoid circular import.
+# Late imports to avoid circular import due to uninitialised app..
 from contact.form import ContactForm
+from contact.notification_email import send_contact_email
 
 
 @app.route('/favicon.ico', methods=['GET'])
@@ -80,11 +80,15 @@ def contact():
         'receive/validate format'
         if form.validate_on_submit():
             'store form contents in databases'
-            DATABASE.store_contact(name=form.name.data,
-                                   email=form.email.data,
-                                   message=form.message.data)
+            message_id = DATABASE.store_contact(name=form.name.data,
+                                                email=form.email.data,
+                                                message=form.message.data)
             'using async:'
             '    send myself email'
+            send_contact_email(message_id=message_id,
+                               contact_email=form.email.data,
+                               contact_name=form.name.data,
+                               message_body=form.message.data)
             '    send myself text message'
             '    return template contact with thankyou instead of form'
             return render_template('contact.html', form=form)
