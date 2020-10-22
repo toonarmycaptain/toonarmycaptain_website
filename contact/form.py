@@ -6,6 +6,7 @@ from wtforms import (StringField,
                      SubmitField,
                      TextAreaField,
                      )
+from wtforms.fields.html5 import EmailField
 from wtforms.validators import (DataRequired,
                                 Email,
                                 Length,
@@ -21,13 +22,13 @@ class ContactForm(FlaskForm):
                                    DataRequired()],
                        render_kw={'minlength': 3, 'maxlength': 255},
                        )
-    email = StringField(label='Email',
-                        validators=[Email(message='Not a valid email address.'),
-                                    Length(min=6, max=255),
-                                    DataRequired(),
-                                    ],
-                        render_kw={'minlength': 6, 'maxlength': 255}
-                        )
+    email = EmailField(label='Email',
+                       validators=[Email(message='Not a valid email address.'),
+                                   Length(min=6, max=255),
+                                   DataRequired(),
+                                   ],
+                       render_kw={'minlength': 6, 'maxlength': 255}
+                       )
 
     message = TextAreaField(label='Message',
                             validators=[Length(min=4, max=CONTACT_MESSAGE_MAX_LENGTH,
