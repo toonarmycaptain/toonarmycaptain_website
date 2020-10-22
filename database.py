@@ -168,3 +168,33 @@ class ContactDatabase:
         person_id = self.store_person(name, email)
         message_id = self.store_message_text(person_id, message)
         return message_id
+
+    def email_sent(self, message_id: int) -> None:
+        """
+        Register in db that a message email has been successfully sent.
+
+        :param message_id:
+        :return: None
+        """
+        with self._connection() as conn:
+            conn.cursor().execute(
+                """UPDATE message
+                   SET email_sent=?
+                   WHERE id=?;
+                   """, (True, message_id))
+        conn.commit()
+
+    def sms_sent(self, message_id: int) -> None:
+        """
+        Register in db that a message SMS has been successfully sent.
+
+        :param message_id:
+        :return: None
+        """
+        with self._connection() as conn:
+            conn.cursor().execute(
+                """UPDATE message
+                   SET sms_sent=?
+                   WHERE id=?;
+                   """, (True, message_id))
+        conn.commit()
