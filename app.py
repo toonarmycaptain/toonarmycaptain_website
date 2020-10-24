@@ -11,7 +11,7 @@ from flask_wtf.csrf import CSRFError, CSRFProtect
 
 from database import ContactDatabase
 
-app = Flask(__name__)
+app: Flask = Flask(__name__)
 
 # Load default, runtime config
 app.config.from_object('default_config')
