@@ -1,4 +1,6 @@
 """app.py"""
+import os
+
 from pathlib import Path
 
 from flask import (Flask,
@@ -15,7 +17,8 @@ app: Flask = Flask(__name__)
 
 # Load default, runtime config
 app.config.from_object('default_config')
-app.config.from_object('app_config')
+if "PYTEST_CURRENT_TEST" not in os.environ:
+    app.config.from_object('app_config')
 
 csrf = CSRFProtect(app)
 

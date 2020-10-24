@@ -4,8 +4,9 @@ from random import randint
 
 import pytest
 
-from app import CONTACT_MESSAGE_MAX_LENGTH
 from database import ContactDatabase
+
+TESTING_CONTACT_MESSAGE_MAX_LENGTH = 10000
 
 
 def empty_sqlite_test_db(db_path) -> ContactDatabase:
@@ -18,7 +19,7 @@ def empty_sqlite_test_db(db_path) -> ContactDatabase:
     # give random db ref to avoid having to drop the tables and recreate each time.
     num = randint(1, 1000000000)
     return ContactDatabase(database_path=Path(db_path, f'test_db{num}'),
-                           message_max_length=CONTACT_MESSAGE_MAX_LENGTH)
+                           message_max_length=TESTING_CONTACT_MESSAGE_MAX_LENGTH)
 
 
 @pytest.fixture
