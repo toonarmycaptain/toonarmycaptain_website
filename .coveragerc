@@ -1,6 +1,6 @@
 [run]
 
-include = /home/travis/build/toonarmycaptain/dionysus/*
+include = /home/travis/build/toonarmycaptain/toonarmycaptain_website/*
 
 omit =
      *.yml
