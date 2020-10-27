@@ -3,8 +3,7 @@ import ssl
 import smtplib
 
 from email.message import EmailMessage
-
-from app import app, DATABASE
+from flask import current_app as app
 
 """NB Keep actual account data secret, do not commit to github."""
 
@@ -45,4 +44,4 @@ def send_contact_email(message_id: int, contact_email: str, contact_name: str, m
         server.send_message(from_addr=from_address,
                             to_addrs=to_address,
                             msg=email_msg)
-    DATABASE.email_sent(message_id)
+    app.DATABASE.email_sent(message_id)

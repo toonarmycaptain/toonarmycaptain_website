@@ -4,7 +4,7 @@ from random import randint
 
 import pytest
 
-from database import ContactDatabase
+from toonarmycaptain_website.database import ContactDatabase
 
 TESTING_CONTACT_MESSAGE_MAX_LENGTH = 10000
 

@@ -1,4 +1,6 @@
 """ Form for contact page. """
+from flask import current_app
+
 from flask_wtf import (FlaskForm,
                        RecaptchaField,
                        )
@@ -12,7 +14,7 @@ from wtforms.validators import (DataRequired,
                                 Length,
                                 )
 
-from app import CONTACT_MESSAGE_MAX_LENGTH
+CONTACT_MESSAGE_MAX_LENGTH = current_app.config['CONTACT_MESSAGE_MAX_LENGTH']
 
 
 class ContactForm(FlaskForm):
@@ -32,8 +34,8 @@ class ContactForm(FlaskForm):
 
     message = TextAreaField(label='Message',
                             validators=[Length(min=4, max=CONTACT_MESSAGE_MAX_LENGTH,
-                                               message=f'Message must be between 4 '
-                                                       f'and {CONTACT_MESSAGE_MAX_LENGTH} '
+                                               message=f"Message must be between 4 "
+                                                       f"and {CONTACT_MESSAGE_MAX_LENGTH} "
                                                        f'characters.',
                                                ),
                                         DataRequired()],
