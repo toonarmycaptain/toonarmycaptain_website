@@ -5,8 +5,26 @@ from flask_wtf.csrf import CSRFProtect
 
 from .database import ContactDatabase
 
+ABOUT_TEXT_STRING = (
+    b'<html>'
+    b'<p>I am <span style="font-family:monospace;">toonarmycaptain</span>, this is my personal '
+    b'website.</p>'
+    b'<p>The repo for the site is '
+    b'<a href="https://github.com/toonarmycaptain/toonarmycaptain_website/">'
+    b'toonarmycaptain_website</a>.</p>'
+    b'<p>I primarily created the site using Flask, some basic CSS, Flask-wtf, and pytest.</p>'
+    b'<p>Any comments or enquiries can be directed to the contact page, or '
+    b'<a href="https://twitter.com/toonarmycaptain">toonarmycaptain</a>.</p>'
+    b'</html>')
 
-def create_app(test_config=None) -> Flask:
+
+def create_app(test_config: dict = None) -> Flask:
+    """
+    Create application instance.
+
+    :param test_config: dict or None
+    :return: Flask
+    """
     app: Flask = Flask(__name__)
     # Defaults to be overridden by instance config:
 
@@ -29,5 +47,14 @@ def create_app(test_config=None) -> Flask:
 
     from toonarmycaptain_website import personal_site
     app.register_blueprint(personal_site.bp)
+
+    @app.route('/about_text/')
+    def about_text() -> bytes:
+        """
+        Basic about text, mainly used for testing.
+
+        :return: bytes
+        """
+        return ABOUT_TEXT_STRING
 
     return app
