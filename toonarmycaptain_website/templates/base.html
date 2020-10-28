@@ -27,11 +27,11 @@
     <nav class="top_navbar">
         <ul>
             {# List in reverse order due to floating to right. #}
-            {% for nav_url, nav_name in [('personal_site.about', 'About me'),
-                                         ('personal_site.contact', 'Contact'),
-                                         ('personal_site.blog', 'Blog'),
-                                         ('personal_site.projects', 'Projects'),
-                                         ('personal_site.home', 'Home'),
+            {% for nav_url, nav_name in [('my_site.about', 'About me'),
+                                         ('my_site.contact', 'Contact'),
+                                         ('my_site.blog', 'Blog'),
+                                         ('my_site.projects', 'Projects'),
+                                         ('my_site.home', 'Home'),
                                          ] %}
                 <li class="navbar_item" >
                     <a class="navbar_link {% if nav_url in request.path %} nav_active_page {% endif %}"

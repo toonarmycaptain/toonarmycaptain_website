@@ -1,4 +1,4 @@
-"""personal_site.py"""
+"""main_site.py"""
 from flask import (current_app as app,
                    Blueprint,
                    redirect,
@@ -8,7 +8,7 @@ from flask import (current_app as app,
                    )
 from flask_wtf.csrf import CSRFError
 
-bp = Blueprint("personal_site", __name__)
+bp = Blueprint("my_site", __name__)
 
 
 @bp.route('/favicon.ico', methods=['GET'])

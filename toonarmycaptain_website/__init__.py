@@ -45,8 +45,8 @@ def create_app(test_config: dict = None) -> Flask:
     app.DATABASE = ContactDatabase(app.config["CONTACT_DATABASE_PATH"],
                                    app.config['CONTACT_MESSAGE_MAX_LENGTH'])
 
-    from toonarmycaptain_website import personal_site
-    app.register_blueprint(personal_site.bp)
+    from toonarmycaptain_website import main_site
+    app.register_blueprint(main_site.bp)
 
     @app.route('/about_text/')
     def about_text() -> bytes:
