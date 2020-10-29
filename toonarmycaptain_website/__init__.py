@@ -42,8 +42,8 @@ def create_app(test_config: dict = None) -> Flask:
 
     # Instantiate/connect to db:
 
-    app.DATABASE = ContactDatabase(app.config["CONTACT_DATABASE_PATH"],
-                                   app.config['CONTACT_MESSAGE_MAX_LENGTH'])
+    app.DATABASE = ContactDatabase(database_path=app.config["CONTACT_DATABASE_PATH"],
+                                   message_max_length=app.config['CONTACT_MESSAGE_MAX_LENGTH'])
 
     from toonarmycaptain_website import main_site
     app.register_blueprint(main_site.bp)
