@@ -31,7 +31,7 @@ def create_app(test_config: dict = None) -> Flask:
     app.config.from_pyfile('default_config.py')
 
     # Load runtime config:
-    if test_config is None:
+    if test_config is None:  # Load production config.
         app.config.from_pyfile('app_config.py')
     else:  # Load testing config:
         app.config.update(test_config)

@@ -18,6 +18,8 @@ default_test_config = {'SECRET_KEY': b'some secret key',
                        'CONTACT_EMAIL_ADDRESS': 'Not yet defined.',
 
                        'CONTACT_CELL_NUMBER': 'Not yet defined.',
+
+                       'TESTING': True,
                        }
 
 
@@ -29,9 +31,9 @@ def app_with_test_config(db_dir_path: Path) -> Flask:
     :return: Flask app
     """
     num = randint(1, 1000000000)
-    default_test_config['CONTACT_DATABASE_PATH'] = Path(db_dir_path, f'test_db{num}')
+    default_test_config['CONTACT_DATABASE_PATH'] = Path(db_dir_path, f'test_db{num}.db')
 
-    app = create_app(default_test_config)
+    app = create_app(test_config=default_test_config)
     return app
 
 

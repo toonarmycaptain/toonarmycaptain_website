@@ -1,13 +1,19 @@
 """ Test app factory. """
+from pathlib import Path
+
 import flask
 
 from toonarmycaptain_website import ABOUT_TEXT_STRING, create_app
 
 
-def test_testing_config():
+def test_testing_config(test_app, tmpdir):
     """App should be under testing config when run by pytest."""
-    assert not create_app().testing
+    # Use app with default/dummy production config, except for db in temp:
+    assert not create_app({'CONTACT_DATABASE_PATH': Path(tmpdir, 'dummy.db')}).testing
+    # Test spp passing testing=true config:
     assert create_app({'TESTING': True}).testing
+    # Test fixture:
+    assert test_app.testing
 
 
 def test_about_text(test_client):
@@ -22,8 +28,7 @@ def test_redirects(test_client):
     assert response.status_code == 308
 
 
-def test_create_app_name():
+def test_create_app_name(test_app):
     """Test app has correct name."""
-    app = create_app()
-    assert isinstance(app, flask.app.Flask)
-    assert app.name == 'toonarmycaptain_website'
+    assert isinstance(test_app, flask.app.Flask)
+    assert test_app.name == 'toonarmycaptain_website'
