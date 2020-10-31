@@ -1,6 +1,7 @@
 """main_site.py"""
 from flask import (current_app as app,
                    Blueprint,
+                   flash,
                    redirect,
                    request,
                    render_template,
@@ -75,10 +76,8 @@ def contact():
                                contact_name=form.name.data,
                                message_body=form.message.data)
             '    send myself text message'
-            '    return template contact with thankyou instead of form'
-            from flask import flash
+
             flash("success message", 'successful_submission')
-            # return render_template('contact.html', form=form)
             return redirect(url_for('my_site.contact'))
         # else:
         #     Template will render form.errors
