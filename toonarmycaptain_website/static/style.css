@@ -98,6 +98,19 @@ input[type=text], input[type="email"], textarea {
     text-align: right;
 }
 
+.contact_form_error {
+    float: right !important;
+
+    font-weight: normal;
+    font-size: 0.8125em;
+
+    background: #c51244 !important;
+    padding: 0.25em !important;
+    border-radius: 0 !important;
+    box-shadow: 1px 1px 1px #aaaaaa;
+    margin-bottom: 0.25em;
+}
+
 
 /* #About */
 

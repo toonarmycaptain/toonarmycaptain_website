@@ -77,10 +77,8 @@ def contact():
             '    send myself text message'
             '    return template contact with thankyou instead of form'
             return render_template('contact.html', form=form)
-        else:
-            # if form.
-            'return template with contact and error message'
-            raise ValueError(form.errors)
+        # else:
+        #     Template will render form.errors
     return render_template('contact.html', form=form)
 
 
