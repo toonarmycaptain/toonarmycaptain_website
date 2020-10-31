@@ -10,8 +10,9 @@ def test_testing_config(test_app, tmpdir):
     """App should be under testing config when run by pytest."""
     # Use app with default/dummy production config, except for db in temp:
     assert not create_app({'CONTACT_DATABASE_PATH': Path(tmpdir, 'dummy.db')}).testing
-    # Test spp passing testing=true config:
-    assert create_app({'TESTING': True}).testing
+    # Test app passing testing=true config:
+    assert create_app({'CONTACT_DATABASE_PATH': Path(tmpdir, 'dummy.db'),
+                       'TESTING': True}).testing
     # Test fixture:
     assert test_app.testing
 
