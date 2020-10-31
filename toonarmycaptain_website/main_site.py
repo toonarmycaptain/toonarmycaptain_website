@@ -92,8 +92,12 @@ def about():
 
 @bp.errorhandler(CSRFError)
 def handle_csrf_error(e):
-    """Redirects user to requested page in event of CSRF Error."""
-    return redirect(url_for(f'{request.path[1:-1]}'))
+    """
+    Redirects user to requested page in event of CSRF Error.
+
+    Assumes all routes are under my_site blueprint.
+    """
+    return redirect(url_for(f'my_site.{request.path[1:-1]}'))
 
 
 if __name__ == '__main__':
