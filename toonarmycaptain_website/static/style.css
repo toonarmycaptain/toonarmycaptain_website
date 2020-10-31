@@ -111,6 +111,22 @@ input[type=text], input[type="email"], textarea {
     margin-bottom: 0.25em;
 }
 
+.successful_submission, .success_message {
+    float: right;
+    color: #4F8A10;
+    background-color: #DFF2BF;
+}
+
+.success_message {
+    font-size: 0.75em;
+}
+
+.successful_submission:before {
+    content:'✓';
+    color: green;
+    padding-right: 1em;
+}
+
 
 /* #About */
 

@@ -76,7 +76,10 @@ def contact():
                                message_body=form.message.data)
             '    send myself text message'
             '    return template contact with thankyou instead of form'
-            return render_template('contact.html', form=form)
+            from flask import flash
+            flash("success message", 'successful_submission')
+            # return render_template('contact.html', form=form)
+            return redirect(url_for('my_site.contact'))
         # else:
         #     Template will render form.errors
     return render_template('contact.html', form=form)
