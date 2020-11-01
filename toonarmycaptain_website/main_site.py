@@ -27,7 +27,7 @@ def favicon():
 @bp.route('/', methods=['GET'])
 def base_url():
     """Redirect bare url to home page."""
-    return redirect(url_for('home'), code=303)
+    return redirect(url_for('my_site.home'), code=301)
 
 
 @bp.route('/home/', methods=['GET'])
