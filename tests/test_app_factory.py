@@ -27,6 +27,7 @@ def test_redirects(test_client):
     """Route w/out trailing backslash redirects (to route with backslash)."""
     response = test_client.get('about_text')
     assert response.status_code == 308
+    assert response.headers['Location'] == f'http://localhost/about_text/'
 
 
 def test_create_app_name(test_app):
