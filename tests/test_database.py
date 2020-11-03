@@ -46,9 +46,58 @@ def test_empty_sqlite_database_fixture(empty_sqlite_database):
     for table in tables:
         assert (table,) in test_db_tables
 
-# test db.store_person
-# - should store a null alternate_names for a new entry
-# should return existing id if existing email with same name
-# should return existing id if existing email and add new alternate name if no alternate names
-# should return existing id if existing email and add new alternate name to existing alternate names
-# should return existing id if existing email and not add existing alternate name to existing alternate names
+
+def test_get_person_from_email(empty_sqlite_database):
+    pass
+
+
+@pytest.mark.parametrize(
+    'new_contact, existing_person, returned_id, resulting_person_row',
+    [(('new contact', 'new@contact.com'), None,  # Brand new entry
+      1, ('new contact', 'new@contact.com', None)),  # NB null alt name.
+     # Existing email with same name.
+     (('new contact', 'new@contact.com'), ('new contact', 'new@contact.com', None),
+      1, ('new contact', 'new@contact.com', None)),
+     # Existing email, different name, no initial alt names.
+     (('new name', 'new@contact.com'), ('new contact', 'new@contact.com', None),
+      1, ('new contact', 'new@contact.com', 'new name')),  # NB New alt name.
+     # Existing email, existing alt name.
+     (('new contact', 'new@contact.com'), ('new contact', 'new@contact.com', 'new name'),
+      1, ('new contact', 'new@contact.com', 'new name')),  # NB New alt name.
+     # Existing email, alt name, existing alt name.
+     (('new name', 'new@contact.com'), ('new contact', 'new@contact.com', 'new name'),
+      1, ('new contact', 'new@contact.com', 'new name')),  # NB No new alt name added.
+     # Existing email, orig name, existing alt name.
+     (('new contact', 'new@contact.com'), ('new contact', 'new@contact.com', 'new name'),
+      1, ('new contact', 'new@contact.com', 'new name')),  # NB No new alt name added.
+     # Existing email, 1st alt name, existing alt names.
+     (('new name1', 'new@contact.com'), ('new contact', 'new@contact.com', 'new name1, new name2'),
+      1, ('new contact', 'new@contact.com', 'new name1, new name2')),  # NB No new alt name added.
+     # Existing email, 2nd alt name, existing alt names.
+     (('new name2', 'new@contact.com'), ('new contact', 'new@contact.com', 'new name1'),
+      1, ('new contact', 'new@contact.com', 'new name1, new name2')),  # NB No new alt name added.
+     # Existing email, new name, existing alt names.
+     (('new name3', 'new@contact.com'), ('new contact', 'new@contact.com', 'new name1, new name2'),
+      1, ('new contact', 'new@contact.com', 'new name1, new name2, new name3')),  # NB New alt name.
+     # New contact where there is existing.
+     (('new contact', 'new@contact.com'), ('other contact', 'exists@contact.com', "whatever alt names"),
+      2, ('new contact', 'new@contact.com', None)),  # New contact added.
+     ])
+def test_store_person(empty_sqlite_database,
+                      new_contact, existing_person,
+                      returned_id, resulting_person_row):
+    test_db = empty_sqlite_database
+    if existing_person:
+        conn = test_db._connection()
+        conn.cursor().execute(
+            """INSERT INTO person(name, email, alternate_names)
+               VALUES(?,?, ?);
+            """, (*existing_person,))
+        conn.commit()
+
+    assert test_db.store_person(*new_contact) == returned_id
+
+    assert test_db._connection().cursor().execute(
+        """SELECT * 
+           FROM person
+           WHERE id=?""", (returned_id,)).fetchone() == (returned_id, *resulting_person_row)
