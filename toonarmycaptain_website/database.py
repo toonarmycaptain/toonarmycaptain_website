@@ -94,6 +94,21 @@ class ContactDatabase:
         conn.commit()
         conn.close()
 
+    def get_person_from_email(self, db_connection: sqlite3.Connection, email: str) -> tuple:
+        """
+        Get person.id from email. 
+        
+        :param db_connection: sqlite3.Connection
+        :param email: str
+        :return: float
+        """
+        return db_connection.cursor().execute(
+            """SELECT person.id, person.name, person.alternate_names
+               FROM person
+               WHERE email=?
+               LIMIT 1;
+               """, (email,)).fetchone()
+
     def store_person(self, name: str, email: str) -> int:
         """
         Store contact details in database.
@@ -111,14 +126,8 @@ class ContactDatabase:
         """
         with self._connection() as conn:
             cursor = conn.cursor()
-            # Check if email already in db:
-            existing_record = cursor.execute(
-                """SELECT person.id, person.name, person.alternate_names
-                   FROM person
-                   WHERE email=?
-                   LIMIT 1;
-                   """, (email,)).fetchone()
-            if existing_record:  # Update with any new data:
+            # Check if email already in db, update with any new data:
+            if existing_record := self.get_person_from_email(conn, email):
                 person_id, person_name, alternate_names = existing_record
 
                 if name != person_name and (not alternate_names  # Avoid str comparison to None.
