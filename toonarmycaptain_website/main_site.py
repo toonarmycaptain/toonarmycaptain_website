@@ -58,7 +58,7 @@ def contact():
     """
 
     from toonarmycaptain_website.contact.form import ContactForm
-    from toonarmycaptain_website.contact.notification_email import send_contact_email
+    from toonarmycaptain_website.contact.email_notification import send_contact_email
 
     form = ContactForm()
 
