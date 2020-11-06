@@ -91,8 +91,8 @@ def test_store_person(empty_sqlite_database,
         conn = test_db._connection()
         conn.cursor().execute(
             """INSERT INTO person(name, email, alternate_names)
-               VALUES(?,?, ?);
-            """, (*existing_person,))
+               VALUES(?,?,?);
+               """, (*existing_person,))
         conn.commit()
 
     assert test_db.store_person(*new_contact) == returned_id
