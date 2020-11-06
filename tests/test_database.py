@@ -47,8 +47,34 @@ def test_empty_sqlite_database_fixture(empty_sqlite_database):
         assert (table,) in test_db_tables
 
 
-def test_get_person_from_email(empty_sqlite_database):
-    pass
+@pytest.mark.parametrize(
+    'stored_contacts, test_email, returned_contact',
+    [((), 'some@email.com', None),  # No contacts in db, email not found.
+     ([('some contact', 'some@contact.com', None)], 'some@email.com', None),  # Email not found in contacts.
+     ([('some contact', 'some@email.com', None)], 'some@email.com',
+      (1, 'some contact', None)),  # Contact with no alt names
+     ([('some contact', 'some@email.com', 'some, alt, names')
+       ], 'some@email.com',
+      (1, 'some contact', 'some, alt, names')),  # Contact with alt names
+     ([('any contact', 'any@email.com', None),
+       ('some contact', 'some@email.com', 'some, alt, names'),
+       ('other contact', 'other@email.com', 'some, other, alt, names'),
+       ], 'some@email.com',
+      (2, 'some contact', 'some, alt, names')),  # Multiple contacts.
+     ])
+def test_get_person_from_email(empty_sqlite_database,
+                               stored_contacts, test_email, returned_contact):
+    test_db = empty_sqlite_database
+    for stored_contact in stored_contacts:
+        conn = test_db._connection()
+        conn.cursor().execute(
+            """INSERT INTO person(name, email, alternate_names)
+               VALUES(?,?,?);
+               """, (*stored_contact,))
+        conn.commit()
+
+    assert test_db.get_person_from_email(test_db._connection(),
+                                         test_email) == returned_contact
 
 
 @pytest.mark.parametrize(
