@@ -127,3 +127,51 @@ def test_store_person(empty_sqlite_database,
         """SELECT * 
            FROM person
            WHERE id=?""", (returned_id,)).fetchone() == (returned_id, *resulting_person_row)
+
+
+def test_store_message_text(empty_sqlite_database):
+    test_db = empty_sqlite_database
+    test_contact_id = test_db.store_person('test subject', 'test@subject.com')
+    test_message = 'some arbitrary message'
+
+    message_id = test_db.store_message_text(test_contact_id, test_message)
+
+    assert test_db._connection().cursor().execute(
+        """SELECT * 
+           FROM message
+           WHERE id=?
+           """, (message_id,)).fetchone() == (message_id, test_contact_id, test_message,
+                                              False, False)  # Email, SMS not sent.
+
+
+def test_store_contact(empty_sqlite_database):
+    test_db = empty_sqlite_database
+
+    test_name = 'name'
+    test_email = 'name@email.com'
+    test_contact_id = 17
+    test_message_text = 'some message'
+    test_message_id = 34
+
+    called = {'mocked_store_person': False,
+              'mocked_store_message_text': False}
+
+    def mocked_store_person(name, email):
+        """Mock db.store_person"""
+        called['mocked_store_person'] = True
+        assert (name, email) == (test_name, test_email)
+        return test_contact_id
+
+    def mocked_store_message_test(person_id, message):
+        """Mock db.store_message_test"""
+        called['mocked_store_message_text'] = True
+        assert (person_id, message) == (test_contact_id, test_message_text)
+        return test_message_id
+
+    test_db.store_person = mocked_store_person
+    test_db.store_message_text = mocked_store_message_test
+
+    assert test_db.store_contact(test_name,
+                                 test_email,
+                                 test_message_text) == test_message_id
+    assert all([called[mock] for mock in called])
