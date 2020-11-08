@@ -131,10 +131,9 @@ def test_store_person(empty_sqlite_database,
 
 def test_store_message_text(empty_sqlite_database):
     test_db = empty_sqlite_database
-    test_contact_id = test_db.store_person('test subject', 'test@subject.com')
+    test_contact_id = test_db.store_person('test subject', 'test_subject.com')
     test_message = 'some arbitrary message'
-
-    message_id = test_db.store_message_text(test_contact_id, test_message)
+    message_id = test_db.store_message_text(test_contact_id, None)
 
     assert test_db._connection().cursor().execute(
         """SELECT * 
@@ -157,13 +156,13 @@ def test_store_contact(empty_sqlite_database):
               'mocked_store_message_text': False}
 
     def mocked_store_person(name, email):
-        """Mock db.store_person"""
+        """Mock db.store_person."""
         called['mocked_store_person'] = True
         assert (name, email) == (test_name, test_email)
         return test_contact_id
 
     def mocked_store_message_test(person_id, message):
-        """Mock db.store_message_test"""
+        """Mock db.store_message_test."""
         called['mocked_store_message_text'] = True
         assert (person_id, message) == (test_contact_id, test_message_text)
         return test_message_id
@@ -175,3 +174,31 @@ def test_store_contact(empty_sqlite_database):
                                  test_email,
                                  test_message_text) == test_message_id
     assert all([called[mock] for mock in called])
+
+
+def test_store_contact_integration_unmocked(empty_sqlite_database):
+    test_db = empty_sqlite_database
+
+    test_name = 'name'
+    test_email = 'name@email.com'
+    test_contact_id = test_db.store_person(test_name, test_email)
+    test_message_text = 'some message'
+
+    test_message_id = test_db.store_contact(test_name,
+                                            test_email,
+                                            test_message_text)
+    # Stored contact
+    assert test_db._connection().cursor().execute(
+        """SELECT * 
+           FROM person
+           WHERE id=?""", (test_contact_id,)).fetchone() == (test_contact_id,
+                                                             test_name,
+                                                             test_email,
+                                                             None)  # No alt names.
+    # Stored message
+    assert test_db._connection().cursor().execute(
+        """SELECT * 
+           FROM message
+           WHERE id=?
+           """, (test_message_id,)).fetchone() == (test_message_id, test_contact_id, test_message_text,
+                                                   False, False)  # Email, SMS not sent.
