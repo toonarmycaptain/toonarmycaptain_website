@@ -131,9 +131,9 @@ def test_store_person(empty_sqlite_database,
 
 def test_store_message_text(empty_sqlite_database):
     test_db = empty_sqlite_database
-    test_contact_id = test_db.store_person('test subject', 'test_subject.com')
+    test_contact_id = test_db.store_person('test subject', 'test@subject.com')
     test_message = 'some arbitrary message'
-    message_id = test_db.store_message_text(test_contact_id, None)
+    message_id = test_db.store_message_text(test_contact_id, test_message)
 
     assert test_db._connection().cursor().execute(
         """SELECT * 
