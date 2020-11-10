@@ -85,8 +85,8 @@ class ContactDatabase:
                          contents TEXT NOT NULL CHECK(typeof("contents") = 'text' AND
                                                       length("contents") <= {self._message_max_length}
                                                       ),
-                         email_sent BOOLEAN NOT NULL CHECK(email_sent IN (0,1)) DEFAULT FALSE, -- Stored as 1,0.
-                         sms_sent BOOLEAN NOT NULL CHECK(sms_sent IN (0,1)) DEFAULT FALSE, -- Stored as 1,0.
+                         email_sent BOOLEAN NOT NULL CHECK(email_sent IN (0,1)) DEFAULT 0, -- Default False,
+                         sms_sent BOOLEAN NOT NULL CHECK(sms_sent IN (0,1)) DEFAULT 0,     -- Stored as 1,0.
                          FOREIGN KEY (person_id) REFERENCES person(id)
                          );
                          """)
