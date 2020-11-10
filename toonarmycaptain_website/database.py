@@ -50,7 +50,6 @@ class ContactDatabase:
         connection = sqlite3.connect(self.database_path)
         # Ensure foreign key constraint enforcement.
         connection.cursor().execute("""PRAGMA foreign_keys=ON;""")
-        # print("Connection to SQLite DB successful")
         return connection
         # handle case where connection fails?
         # or should it fail, since on disk db connection should not fail?
@@ -87,7 +86,7 @@ class ContactDatabase:
                                                       length("contents") <= {self._message_max_length}
                                                       ),
                          email_sent BOOLEAN NOT NULL CHECK (email_sent IN (0,1)) DEFAULT FALSE, -- Stored as 1/0.
-                         sms_sent BOOLEAN NOT NULL CHECK (email_sent IN (0,1)) DEFAULT FALSE, -- Stored as 1/0.
+                         sms_sent BOOLEAN NOT NULL CHECK (sms_sent IN (0,1)) DEFAULT FALSE, -- Stored as 1/0.
                          FOREIGN KEY (person_id) REFERENCES person(id)
                          );
                          """)
