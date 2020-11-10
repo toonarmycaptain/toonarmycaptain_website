@@ -20,8 +20,11 @@ CONTACT_MESSAGE_MAX_LENGTH = current_app.config['CONTACT_MESSAGE_MAX_LENGTH']
 class ContactForm(FlaskForm):
     """Contact form."""
     name = StringField(label='Name',
-                       validators=[Length(min=3, max=255),
-                                   DataRequired()],
+                       validators=[Length(min=3, max=255,
+                                          message="Name must be between 4 "
+                                                  "and 255 characters."),
+                                   DataRequired(),
+                                   ],
                        render_kw={'minlength': 3, 'maxlength': 255},
                        )
     email = EmailField(label='Email',
@@ -39,7 +42,8 @@ class ContactForm(FlaskForm):
                                                        f'characters.',
                                                ),
                                         DataRequired()],
-                            render_kw={'maxlength': CONTACT_MESSAGE_MAX_LENGTH},
+                            render_kw={'minlength': 4,
+                                       'maxlength': CONTACT_MESSAGE_MAX_LENGTH},
                             )
     # recaptcha = RecaptchaField()
     submit = SubmitField('Submit')
