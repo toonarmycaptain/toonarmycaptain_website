@@ -202,3 +202,55 @@ def test_store_contact_integration_unmocked(empty_sqlite_database):
            WHERE id=?
            """, (test_message_id,)).fetchone() == (test_message_id, test_contact_id, test_message_text,
                                                    False, False)  # Email, SMS not sent.
+
+
+def test_email_sent(empty_sqlite_database):
+    test_db = empty_sqlite_database
+    test_person_id = test_db.store_person('some_person', 'some@email.com')
+    test_message_text = 'some message text'
+    test_message_id = test_db.store_message_text(test_person_id, test_message_text)
+
+    # No existing field data:
+    assert test_db._connection().cursor().execute(
+        """SELECT * 
+           FROM message
+           WHERE id=?
+           """, (test_message_id,)).fetchone() == (test_message_id,
+                                                   test_person_id,
+                                                   test_message_text,
+                                                   0, 0)  # Email, SMS not sent.
+
+    # Add email sent:
+    test_db.email_sent(test_message_id)
+
+    assert test_db._connection().cursor().execute(
+        """SELECT email_sent
+           FROM message
+           WHERE id=?
+           """, (test_message_id,)).fetchone() == (1,)
+
+
+def test_sms_sent(empty_sqlite_database):
+    test_db = empty_sqlite_database
+    test_person_id = test_db.store_person('some_person', 'some@email.com')
+    test_message_text = 'some message text'
+    test_message_id = test_db.store_message_text(test_person_id, test_message_text)
+
+    # No existing field data:
+    assert test_db._connection().cursor().execute(
+        """SELECT * 
+           FROM message
+           WHERE id=?
+           """, (test_message_id,)).fetchone() == (test_message_id,
+                                                   test_person_id,
+                                                   test_message_text,
+                                                   0, 0)  # Email, SMS not sent.
+
+    # Add sms sent:
+    test_db.sms_sent(test_message_id)
+
+    assert test_db._connection().cursor().execute(
+        """SELECT sms_sent
+           FROM message
+           WHERE id=?
+           """, (test_message_id,)).fetchone() == (1,)
