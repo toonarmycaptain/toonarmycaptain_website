@@ -39,14 +39,20 @@ def test_subpage_routes_without_trailing_slash_redirects(test_client, test_app,
 @pytest.mark.parametrize('route, page_title',
                          [('home', b'Home'),
                           ('projects', b'Projects'),
-                          ('blog', b'Blog'),
                           ('contact', b'Contact'),
                           ('about', b'About me'),
                           ])
-def test_subpage_routes(test_client, test_app,
-                        route, page_title):
+def test_subpage_internal_routes(test_client, test_app,
+                                 route, page_title):
     """Subpages load content."""
     response = test_client.get(f'{route}/')
     assert response.status_code == 200
     # Equivalent to assert f'{page_title} - toonarmycaptain.com' in str(response.data)
     assert page_title + b' - toonarmycaptain.com' in response.data
+
+
+def test_redirect_to_blog(test_client, test_app):
+    """Redirects to blog."""
+    response = test_client.get('blog/')
+    assert response.status_code == 302
+    assert response.headers['Location'] == 'https://dev.to/toonarmycaptain/'

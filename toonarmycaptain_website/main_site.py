@@ -44,9 +44,12 @@ def projects():
 
 @bp.route('/blog/', methods=['GET'])
 def blog():
-    """Blog page."""
-    return render_template('blog.html')
+    """
+    Blog page.
 
+    Links to dev.to blog. May in future embed blog/posts.
+    """
+    return redirect("https://dev.to/toonarmycaptain/")
 
 @bp.route('/contact/', methods=['GET', 'POST'])
 def contact():
