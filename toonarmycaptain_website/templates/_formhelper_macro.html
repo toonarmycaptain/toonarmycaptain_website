@@ -1,0 +1,17 @@
+{% macro render_field(field) %}
+    {% if field.name != 'submit' %}
+        {# Submit button doesn't need a label #}
+        {{ field.label }}:
+    {% endif %}
+    {{ field(**kwargs)|safe }}
+
+    {% if field.errors %}
+        {% for error in field.errors %}
+            <span><br><span class="contact_form_error">{{ error }}</span></span>
+        {% endfor %}
+    {% endif %}
+{#    <br>#}
+{% endmacro %}
+{# center or make margin from side of page for form#}
+{# make message field slightly larger and top align with top of label "Message" text (currely bottom aligns #}
+{# make start of fields align cleanly#}

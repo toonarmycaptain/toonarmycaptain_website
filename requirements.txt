@@ -1,0 +1,4 @@
+email_validator==1.1.1
+flask==1.1.2
+flask-wtf==0.14.3
+

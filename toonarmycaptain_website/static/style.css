@@ -1,0 +1,141 @@
+body {
+    padding: 1%;
+}
+
+/* #Navbar */
+
+.top_navbar {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    font-family: sans-serif;
+    overflow: hidden;
+    position: -webkit-sticky; /* Safari */
+    position: sticky;
+    top: 0;
+    z-index: 289;
+
+}
+
+.navbar_item {
+    background: white;
+    display: inline;
+    float: right;
+}
+
+.navbar_link {
+    display: block;
+    color: black;
+    padding: 8px;
+    text-align: center;
+    text-decoration: none;
+    float: right;
+}
+
+.navbar_item .navbar_link:hover {
+    color: white;
+    background-color: black;
+}
+
+.nav_active_page {
+    text-decoration: underline;
+}
+
+.navbar_avatar {
+    height: 2em;
+    position: relative;
+    right: -.55em;
+    overflow: hidden;
+    border-radius: 50%;
+    alignment: right;
+}
+
+
+/* #Home */
+
+.home_full_avatar {
+    position: relative;
+    bottom: -2.25em;
+    overflow: hidden;
+    border-radius: 50%;
+}
+
+.toonarmycaptain_name, .handle {
+    font-family: 'Andale Mono', terminal, monospace;
+}
+
+.toonarmycaptain_subtitle {
+    font-family: sans-serif;
+    font-style: italic;
+    font-size: smaller;
+    top: -1.5em;
+    position: relative;
+}
+
+
+/* #Form */
+
+.contact_form {
+    font-family: sans-serif;
+    padding-left: 10%;
+    padding-right: 30%;
+    display: flex;
+}
+
+.form_element {
+    display: block;
+    margin-top: 1em;
+    clear: both;
+}
+
+input[type=text], input[type="email"], textarea {
+    float: right;
+    margin-left: 0.25em;
+}
+
+.contact_form_submit_button {
+    margin-top: 1.75em;
+    text-align: right;
+}
+
+.contact_form_error {
+    float: right !important;
+
+    font-weight: normal;
+    font-size: 0.8125em;
+
+    background: #c51244 !important;
+    padding: 0.25em !important;
+    border-radius: 0 !important;
+    box-shadow: 1px 1px 1px #aaaaaa;
+    margin-bottom: 0.25em;
+}
+
+.successful_submission, .success_message {
+    float: right;
+    color: #4F8A10;
+    background-color: #DFF2BF;
+}
+
+.success_message {
+    font-size: 0.75em;
+}
+
+.successful_submission:before {
+    content:'✓';
+    color: green;
+    padding-right: 1em;
+}
+
+
+/* #About */
+
+.center_text_block {
+    margin-left: 10%;
+    margin-right: 10%;
+
+}
+
+.about_bio {
+    font-family: sans-serif;
+}

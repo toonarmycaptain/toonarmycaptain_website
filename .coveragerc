@@ -1,0 +1,10 @@
+[run]
+
+include = /home/travis/build/toonarmycaptain/toonarmycaptain_website/*
+
+omit =
+     *.yml
+     *.md
+     tests/*
+     venv/*
+     *_env/*

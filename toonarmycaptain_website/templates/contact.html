@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block header %}
+    {% block title %}Contact{% endblock %}
+{% endblock %}
+{% block body %}
+
+    <p>Contact form</p>
+    <div class='contact_form'>
+        {#        # This should have a contact form. Make it send me an email.#}
+        {% from "_formhelper_macro.html" import render_field %}
+        <form method=post>
+            {{ form.hidden_tag() }}
+            <div id='name' class='form_element'>{{ render_field(form.name) }}</div>
+            <div id='email' class='form_element'>{{ render_field(form.email) }}</div>
+            <div id='message' class='form_element'>{{ render_field(form.message) }}</div>
+            {#        {{ render_field(form.recaptcha) }}#}
+            <div id='submit' class='contact_form_submit_button'> {{ render_field(form.submit) }}</div>
+
+            {% with success = get_flashed_messages(category_filter=["successful_submission", "success_message"]) %}
+                {% if success %}
+                    {% for message in success %}
+                    <div>
+                        <span class="successful_submission">Thankyou!</span>
+                        <br>
+                        <span class="success_message">NB I endeavour to respond within 48 hours.</span>
+                    </div>
+
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+        </form>
+        {#        # Try to also make it send a text.#}
+        {#        # Clear form if successful submission, along with success message.#}
+    </div>
+
+{% endblock %}
+

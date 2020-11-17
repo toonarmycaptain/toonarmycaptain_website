@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en-GB">
+
+
+<head>
+    <link rel="stylesheet"
+          type="text/css"
+          href="{{ url_for('static', filename='style.css') }}">
+    <link rel="shortcut icon"
+          type='image/vnd.microsoft.icon'
+          href="{{ url_for('static', filename='favicon.ico') }}">
+    <link rel="preload"
+          href="{{ url_for('static', filename='avatar_full.jpg') }}"
+          as="image">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    {% block head %}
+        <title>
+            {% block title %}{% endblock %} - toonarmycaptain.com
+        </title>
+    {% endblock %}
+</head>
+
+<body>
+    {# Delay page rendering until after CSS is loaded in FF #}
+    <script>0</script>
+
+    <nav class="top_navbar">
+        <ul>
+            {# List in reverse order due to floating to right. #}
+            {% for nav_url, nav_name in [('my_site.about', 'About me'),
+                                         ('my_site.contact', 'Contact'),
+                                         ('my_site.blog', 'Blog'),
+                                         ('my_site.projects', 'Projects'),
+                                         ('my_site.home', 'Home'),
+                                         ] %}
+                <li class="navbar_item" >
+                    <a class="navbar_link {% if nav_url in request.path %} nav_active_page {% endif %}"
+                       href="{{ url_for(nav_url) }}">{{ nav_name }}</a>
+                </li>
+            {% endfor %}
+            {% if not 'home' in request.path %}
+                <li class="navbar_item">
+                    <img class="navbar_avatar" src="{{ url_for('static', filename='avatar_full.jpg') }}"
+                         alt="toonarmycaptain avatar - 'Shirtless' by felabba">
+                </li>
+            {% endif %}
+        </ul>
+    </nav>
+    {% block body %}
+    {% endblock %}
+</body>
+</html>
+
