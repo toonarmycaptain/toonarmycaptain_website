@@ -4,8 +4,7 @@
     {% block title %}Contact{% endblock %}
 {% endblock %}
 {% block body %}
-
-    <p>Contact form</p>
+    <h1 class="line_breaking_title center_text_block">Contact form</h1>
     <div class='contact_form'>
         {#        # This should have a contact form. Make it send me an email.#}
         {% from "_formhelper_macro.html" import render_field %}
@@ -33,6 +32,5 @@
         {#        # Try to also make it send a text.#}
         {#        # Clear form if successful submission, along with success message.#}
     </div>
-
 {% endblock %}
 

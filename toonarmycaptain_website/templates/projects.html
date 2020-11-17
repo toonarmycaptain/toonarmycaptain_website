@@ -1,9 +1,36 @@
 {% extends 'base.html' %}
 
 {% block header %}
-  {% block title %}Projects{% endblock %}
+    {% block title %}Projects{% endblock %}
 {% endblock %}
 
 {% block body %}
-Coming soon...
+    <div class="center_text_block">
+        <h1 class="line_breaking_title">Projects</h1>
+        <p>
+            Some projects I am working on/maintain:
+            <br>
+        </p>
+        <p><a href="https://github.com/toonarmycaptain/toonarmycaptain_website/"
+              title="toonarmycaptain_website - GitHub">This website</a></p>
+        <p>
+            <a href="https://github.com/toonarmycaptain/dionysus" title="dionysus - GitHub">dionysus</a>
+            <br>
+            Student avatar score chart generator.
+        </p>
+        <p>
+            <a href="https://github.com/toonarmycaptain/probable_immunity/"
+               title="probably_immunity - GitHub">probable_immunity</a>
+            <br>
+            Website showing user possible chance of immunity to various illnesses and risk of contracting those
+            illnesses following exposure.
+            <br>
+            Currently hosted on <a href="https://probableimmunity.pythonanywhere.com/immunity/">pythonanywhere</a>.
+        </p>
+        <p>
+            <a href="https://github.com/toonarmycaptain/xkcd_archiver" title="xkcd_archiver - GitHub">xkcd_archiver</a>
+            <br>
+            Download and maintain an archive of xkcd comics quickly.
+        </p>
+    </div>
 {% endblock %}
