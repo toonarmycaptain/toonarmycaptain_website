@@ -2,6 +2,15 @@ body {
     padding: 1%;
 }
 
+.line_breaking_title {
+    flex-basis: 100%;
+}
+
+.center_text_block {
+    margin-left: 10%;
+    margin-right: 10%;
+}
+
 /* #Navbar */
 
 .top_navbar {
@@ -122,19 +131,13 @@ input[type=text], input[type="email"], textarea {
 }
 
 .successful_submission:before {
-    content:'✓';
+    content: '✓';
     color: green;
     padding-right: 1em;
 }
 
 
 /* #About */
-
-.center_text_block {
-    margin-left: 10%;
-    margin-right: 10%;
-
-}
 
 .about_bio {
     font-family: sans-serif;
