@@ -10,6 +10,7 @@ from toonarmycaptain_website.contact.email_notification import (send_contact_ema
 
 
 def test_send_contact_email(monkeypatch, test_client):
+    """Email is sent with correct metadata and logged in db."""
     mock_host_url = 42
     mock_ssl_port = 'some.server'
     mock_from_address = 'mock@from.address'
@@ -87,9 +88,9 @@ def test_send_contact_email(monkeypatch, test_client):
 
 
 def test_compose_notification_email():
+    """EmailMessage composed with correct metadata."""
     test_from_address = 'test@from.address'
     test_to_address = 'test@to.address'
-    test_message_id = 314
     test_contact_email = 'contact@host.tld'
     test_contact_name = 'Sir Lancelot'
     test_message_body = 'Some amusing message.'
