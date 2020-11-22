@@ -13,9 +13,11 @@ default_test_config = {'SECRET_KEY': b'some secret key',
                        'CONTACT_DATABASE_PATH': 'Not yet defined.',
                        'CONTACT_MESSAGE_MAX_LENGTH': 31415,
 
-                       'SERVER_EMAIL_ADDRESS': 'Not yet defined.',
-                       'SERVER_EMAIL_PASSWORD': 'Not yet defined.',
-                       'CONTACT_EMAIL_ADDRESS': 'Not yet defined.',
+                       'SSL_PORT': 42,
+                       'EMAIL_SERVER_HOST_URL': 'some.server',
+                       'SERVER_EMAIL_ADDRESS': 'mock@from.address',
+                       'SERVER_EMAIL_PASSWORD': 'mock@to.address',
+                       'CONTACT_EMAIL_ADDRESS': 'mock_password',
 
                        'CONTACT_CELL_NUMBER': 'Not yet defined.',
 
@@ -46,6 +48,7 @@ def test_app(tmpdir):
 def test_app_fixture(test_app):
     for key, value in default_test_config.items():
         assert test_app.config[key] == value
+
 
 @pytest.fixture
 def test_client(test_app):

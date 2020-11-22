@@ -6,6 +6,8 @@ SECRET_KEY: bytes = b'some secret key'
 CONTACT_DATABASE_PATH = Path('some_instance.db')
 CONTACT_MESSAGE_MAX_LENGTH: int = 10000  # characters
 
+SSL_PORT: int = 465  # For SSL.
+EMAIL_SERVER_HOST_URL: str = "some.server"
 SERVER_EMAIL_ADDRESS: str = 'some email to send contact emails from'
 SERVER_EMAIL_PASSWORD: str = 'some good password'
 CONTACT_EMAIL_ADDRESS: str = 'where to send contact emails to'

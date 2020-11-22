@@ -51,6 +51,7 @@ def blog():
     """
     return redirect("https://dev.to/toonarmycaptain/")
 
+
 @bp.route('/contact/', methods=['GET', 'POST'])
 def contact():
     """
@@ -74,7 +75,8 @@ def contact():
                                                     message=form.message.data)
             'using async:'
             '    send myself email'
-            send_contact_email(message_id=message_id,
+            send_contact_email(app,
+                               message_id=message_id,
                                contact_email=form.email.data,
                                contact_name=form.name.data,
                                message_body=form.message.data)
