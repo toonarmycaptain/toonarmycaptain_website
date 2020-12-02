@@ -8,6 +8,7 @@ def test_favicon(test_client, test_app):
     assert response.status_code == 302
     assert response.headers['Location'] == 'http://localhost/static/favicon.ico?mimetype=image%2Fvnd.microsoft.icon'
 
+
 def test_base_url_redirects_to_home(test_client, test_app):
     """Base url should go to home page."""
     response = test_client.get('/')
