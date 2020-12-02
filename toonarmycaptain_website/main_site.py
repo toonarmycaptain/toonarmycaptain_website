@@ -18,7 +18,7 @@ def favicon():
     Serve webpage icon.
     """
     return redirect(url_for('static',
-                            filename='favicon48x48.ico',
+                            filename='favicon.ico',
                             mimetype='image/vnd.microsoft.icon'
                             )
                     )
