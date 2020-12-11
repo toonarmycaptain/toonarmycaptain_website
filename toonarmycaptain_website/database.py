@@ -95,7 +95,8 @@ class ContactDatabase:
 
     def get_person_from_email(self, db_connection: sqlite3.Connection, email: str) -> tuple:
         """
-        Get person.id from email. 
+        Get person.id from email.
+        Email column is lower-cased/case-insensitive.
         
         :param db_connection: sqlite3.Connection
         :param email: str
@@ -106,7 +107,7 @@ class ContactDatabase:
                FROM person
                WHERE email=?
                LIMIT 1;
-               """, (email,)).fetchone()
+               """, (email.lower(),)).fetchone()
 
     def store_person(self, name: str, email: str) -> int:
         """
@@ -115,6 +116,7 @@ class ContactDatabase:
         If nonexistent based on email, add contact.
         If existent email, new name, add alternate name to
         alternate_names column.
+        Email column is case-insensitive, stores/checked as lowercase.
 
         NB alternate_names column might have spurious commas if user submits
         data containing commas.
@@ -123,6 +125,7 @@ class ContactDatabase:
         :param email: str
         :return: int person.id
         """
+        email = email.lower()
         with self._connection() as conn:
             cursor = conn.cursor()
             # Check if email already in db, update with any new data:

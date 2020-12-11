@@ -53,6 +53,8 @@ def test_empty_sqlite_database_fixture(empty_sqlite_database):
      ([('some contact', 'some@contact.com', None)], 'some@email.com', None),  # Email not found in contacts.
      ([('some contact', 'some@email.com', None)], 'some@email.com',
       (1, 'some contact', None)),  # Contact with no alt names
+     ([('some contact', 'some@email.com', None)], 'SomE@Email.com',
+      (1, 'some contact', None)),  # Capitalised email comparison.
      ([('some contact', 'some@email.com', 'some, alt, names')
        ], 'some@email.com',
       (1, 'some contact', 'some, alt, names')),  # Contact with alt names
@@ -81,9 +83,13 @@ def test_get_person_from_email(empty_sqlite_database,
     'new_contact, existing_person, returned_id, resulting_person_row',
     [(('new contact', 'new@contact.com'), None,  # Brand new entry
       1, ('new contact', 'new@contact.com', None)),  # NB null alt name.
+     (('new contact', 'New@Contact.com'), None,  # Brand new entry with mixed case email.
+      1, ('new contact', 'new@contact.com', None)),
      # Existing email with same name.
      (('new contact', 'new@contact.com'), ('new contact', 'new@contact.com', None),
       1, ('new contact', 'new@contact.com', None)),
+     (('new contact', 'New@Contact.com'), ('new contact', 'new@contact.com', None),
+      1, ('new contact', 'new@contact.com', None)),  # Mixed case orig email.
      # Existing email, different name, no initial alt names.
      (('new name', 'new@contact.com'), ('new contact', 'new@contact.com', None),
       1, ('new contact', 'new@contact.com', 'new name')),  # NB New alt name.
@@ -112,6 +118,12 @@ def test_get_person_from_email(empty_sqlite_database,
 def test_store_person(empty_sqlite_database,
                       new_contact, existing_person,
                       returned_id, resulting_person_row):
+    """
+    Data stored
+
+    Existing person/contact existing_person needs to be lower-cased as
+    email will be stored in lower case.
+    """
     test_db = empty_sqlite_database
     if existing_person:
         conn = test_db._connection()
