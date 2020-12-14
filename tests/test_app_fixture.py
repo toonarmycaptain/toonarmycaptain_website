@@ -22,6 +22,8 @@ default_test_config = {'SECRET_KEY': b'some secret key',
                        'CONTACT_CELL_NUMBER': 'Not yet defined.',
 
                        'TESTING': True,
+                       'WTF_CSRF_METHODS': [],
+                       'WTF_CSRF_ENABLED': False,
                        }
 
 
