@@ -22,7 +22,7 @@ default_test_config = {'SECRET_KEY': b'some secret key',
                        'CONTACT_CELL_NUMBER': 'Not yet defined.',
 
                        'TESTING': True,
-                       'WTF_CSRF_METHODS': [],
+                       'WTF_CSRF_METHODS': set(),
                        'WTF_CSRF_ENABLED': False,
                        }
 
@@ -38,6 +38,7 @@ def app_with_test_config(db_dir_path: Path) -> Flask:
     default_test_config['CONTACT_DATABASE_PATH'] = Path(db_dir_path, f'test_db{num}.db')
 
     app = create_app(test_config=default_test_config)
+    assert app.config['WTF_CSRF_ENABLED'] is False
     return app
 
 
