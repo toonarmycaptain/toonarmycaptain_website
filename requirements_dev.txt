@@ -2,6 +2,6 @@ coverage==5.5
 coveralls==3.0.0
 mypy==0.812
 pytest==6.2.2
-pytest-flask==1.1.0
+pytest-flask==1.2.0
 pytest-cov==2.11.1
 pytest-mypy==0.8.0
