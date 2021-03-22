@@ -171,12 +171,12 @@ input[type=text], input[type="email"], textarea {
 .footer_socials_link_list {
     list-style-type: none;
     margin: 0px;
-    padding: 0;
+    margin-right: 70px;
 
 }
 
 .footer_social_item {
-    padding: 12px;
+    padding: 10px;
     display: inline;
 }
 
