@@ -33,5 +33,29 @@
         {#        # Try to also make it send a text.#}
         {#        # Clear form if successful submission, along with success message.#}
     </div>
-{% endblock %}
 
+    <br>
+    <br>
+    <p class="center_text_block">Or find me on:</p>
+    <ul class="contact_socials_link_list center_text_block">
+
+        <li>
+            <a href="https://twitter.com/toonarmycaptain?ref_src=twsrc%5Etfw" class="contact_social_logo twitter-follow-button" data-size="large" data-show-count="false">Follow @toonarmycaptain</a><script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+        </li>
+        <li class="contact_social_item">
+            <a href="https://github.com/toonarmycaptain/">
+                <img class="contact_social_logo" src="{{ url_for('static', filename='github_logo.png') }}"
+                     title="GitHub - toonarmycaptain" alt="GitHub - toonarmycaptain"></a>
+            <a href="https://github.com/toonarmycaptain/">
+                <img class="contact_social_logo" src="{{ url_for('static', filename='github_icon_bw.svg') }}"
+                     title="GitHub - toonarmycaptain" alt="GitHub - toonarmycaptain"></a>
+        </li>
+        <li class="contact_social_item">
+            <a href="https://www.linkedin.com/in/davidantonini/">
+                <img class="contact_social_logo" src="{{  url_for('static', filename='ln_logo_128px.png') }}"
+                    title="David Antonini - LinkedIn" alt="David Antonini - LinkedIn"></a>
+
+
+        </ul>
+
+{% endblock %}

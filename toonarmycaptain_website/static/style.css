@@ -136,9 +136,50 @@ input[type=text], input[type="email"], textarea {
     padding-right: 1em;
 }
 
+.contact_socials_link_list {
+    list-style-type: none;
+    margin-left: 10%;
+    margin-right: 10%;
+}
+
+.contact_social_item {
+
+}
+
+.contact_social_logo {
+    height: 3em
+}
+
 
 /* #About */
 
 .about_bio {
     font-family: sans-serif;
+}
+
+
+.footer {
+    position: fixed;
+    bottom: 0;
+    margin: 0 auto;
+    padding-top-top: 2em;
+    width: 100%;
+    text-align: center;
+}
+
+
+.footer_socials_link_list {
+    list-style-type: none;
+    margin: 0px;
+    padding: 0;
+
+}
+
+.footer_social_item {
+    padding: 12px;
+    display: inline;
+}
+
+.footer_social_icon {
+    height: 3em;
 }
