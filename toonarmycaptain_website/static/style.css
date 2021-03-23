@@ -81,6 +81,10 @@ body {
     position: relative;
 }
 
+/* #Projects */
+.social_icon_text_height {
+    height: 1.6ex;
+}
 
 /* #Form */
 
