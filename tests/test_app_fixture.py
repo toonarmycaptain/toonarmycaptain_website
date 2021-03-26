@@ -13,10 +13,7 @@ default_test_config = {'SECRET_KEY': b'some secret key',
                        'CONTACT_DATABASE_PATH': 'Not yet defined.',
                        'CONTACT_MESSAGE_MAX_LENGTH': 31415,
 
-                       'SSL_PORT': 42,
-                       'EMAIL_SERVER_HOST_URL': 'some.server',
                        'SERVER_EMAIL_ADDRESS': 'mock@from.address',
-                       'SERVER_EMAIL_PASSWORD': 'mock@to.address',
                        'CONTACT_EMAIL_ADDRESS': 'mock_password',
 
                        'CONTACT_CELL_NUMBER': 'Not yet defined.',
