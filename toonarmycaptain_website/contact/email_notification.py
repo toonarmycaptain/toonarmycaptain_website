@@ -17,7 +17,8 @@ def send_contact_email(app: Flask,
     authenticate. These credentials are obtained from
     https://console.cloud.google.com/apis/dashboard and a Desktop application
     type credential must be selected (since the auth is being done on a personal
-    machine).
+    machine). The credentials must be placed in the top folder, with
+    README.md/requirements.txt etc.
 
     Then update message db entry with email_sent=True.
 
