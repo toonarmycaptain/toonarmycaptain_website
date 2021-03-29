@@ -187,3 +187,7 @@ input[type=text], input[type="email"], textarea {
 .footer_social_icon {
     height: 3em;
 }
+
+.image_enlarge_on_hover:hover {
+    transform: scale(1.1);
+}
