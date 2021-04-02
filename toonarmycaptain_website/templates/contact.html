@@ -2,6 +2,12 @@
 
 {% block header %}
     {% block title %}Contact{% endblock %}
+    <link rel="preload"
+          href="{{ url_for('static', filename='github_logo.png') }}" as="image">
+    <link rel="preload"
+          href="{{ url_for('static', filename='github_icon_bw.svg') }}" as="image">
+    <link rel="preload"
+          href="{{ url_for('static', filename='ln_logo_128px.png') }}" as="image">
 {% endblock %}
 {% block body %}
     <h1 class="line_breaking_title center_text_block">Contact</h1>
