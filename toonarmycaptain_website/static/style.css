@@ -176,7 +176,7 @@ input[type=text], input[type="email"], textarea {
     list-style-type: none;
     margin: 0;
     margin-right: 70px;
-
+    justify-content: center; 
 }
 
 .footer_social_item {
