@@ -37,7 +37,7 @@ def send_contact_email(app: Flask,
 
     try:
         assert ezgmail.EMAIL_ADDRESS == app.config['SERVER_EMAIL_ADDRESS']
-        print(f"{ezgmail.EMAIL_ADDRESS == app.config['SERVER_EMAIL_ADDRESS']=}")
+
         ezgmail.send(recipient=to_address, subject=email_subject, body=email_body)
         app.DATABASE.email_sent(message_id)
     except Exception as e:
