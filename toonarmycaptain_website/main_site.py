@@ -49,7 +49,7 @@ def blog():
 
     Links to dev.to blog. May in future embed blog/posts.
     """
-    return redirect("https://dev.to/toonarmycaptain/")
+    return redirect(app.blog_url)
 
 
 @bp.route('/contact/', methods=['GET', 'POST'])
@@ -103,6 +103,12 @@ def handle_csrf_error(e):
     Assumes all routes are under my_site blueprint.
     """
     return redirect(url_for(f'my_site.{request.path[1:-1]}'))
+
+
+@bp.route('/adam_todo/', methods=['GET'])
+def adam_todo():
+    """Adam's stuff."""
+    return render_template('adam_todo.html')
 
 
 if __name__ == '__main__':

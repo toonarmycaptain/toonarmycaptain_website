@@ -60,15 +60,21 @@
 <nav class="top_navbar">
     <ul>
         {# List in reverse order due to floating to right. #}
+        {# URL from app factory, no {{}} because already inside of those brackets in for loop#}
         {% for nav_url, nav_name in [('my_site.about', 'About me'),
                                          ('my_site.contact', 'Contact'),
-                                         ('my_site.blog', 'Blog'),
+                                         ( blog_url , 'Blog'),
                                          ('my_site.projects', 'Projects'),
                                          ('my_site.home', 'Home'),
                                          ] %}
             <li class="navbar_item">
                 <a class="navbar_link {% if nav_url in request.path %} nav_active_page {% endif %}"
-                   href="{{ url_for(nav_url) }}">{{ nav_name }}</a>
+                   {% if 'my_site.' in nav_url %}
+                       href="{{ url_for(nav_url) }}"
+                   {% else %}
+                       href="{{ nav_url }}" target="_blank" rel="noreferrer"  {# Open external sites in new window, no tracking. #}
+                   {% endif %}
+                 >{{ nav_name }}</a>
             </li>
         {% endfor %}
         {% if not 'home' in request.path %}
