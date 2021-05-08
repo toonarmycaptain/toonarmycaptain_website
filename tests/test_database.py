@@ -33,8 +33,7 @@ def empty_sqlite_database(tmpdir) -> ContactDatabase:
     :param tmpdir: temporary directory path (fixture)
     :return: ContactDatabase
     """
-    test_db = empty_sqlite_test_db(tmpdir)
-    return test_db
+    return empty_sqlite_test_db(tmpdir)
 
 
 def test_empty_sqlite_database_fixture(empty_sqlite_database):

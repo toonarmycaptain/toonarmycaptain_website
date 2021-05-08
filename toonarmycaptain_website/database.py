@@ -177,8 +177,7 @@ class ContactDatabase:
         :return: int
         """
         person_id = self.store_person(name, email)
-        message_id = self.store_message_text(person_id, message)
-        return message_id
+        return self.store_message_text(person_id, message)
 
     def email_sent(self, message_id: int) -> None:
         """
