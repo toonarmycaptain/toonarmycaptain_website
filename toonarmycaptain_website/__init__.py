@@ -48,11 +48,9 @@ def create_app(test_config: dict = None) -> Flask:
     from toonarmycaptain_website import main_site
     app.register_blueprint(main_site.bp)
 
-    app.blog_url = "https://dev.to/toonarmycaptain/"
-
     @app.context_processor
     def blog_url() -> dict:
-        return dict(blog_url=app.blog_url)
+        return dict(blog_url=app.config['BLOG_URL'])
 
     @app.route('/about_text/')
     def about_text() -> bytes:

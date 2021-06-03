@@ -49,7 +49,7 @@ def blog():
 
     Links to dev.to blog. May in future embed blog/posts.
     """
-    return redirect(app.blog_url)
+    return redirect(app.config['BLOG_URL'])
 
 
 @bp.route('/contact/', methods=['GET', 'POST'])
