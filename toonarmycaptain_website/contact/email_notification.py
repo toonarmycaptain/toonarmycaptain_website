@@ -29,7 +29,7 @@ def send_contact_email(app: Flask,
     :param message_body: str
     :return: None
     """
-
+    DATABASE = app.config['DATABASE']
     to_address = app.config['CONTACT_EMAIL_ADDRESS']
     email_subject, email_body = compose_notification_email(contact_email,
                                                            contact_name,
@@ -39,7 +39,7 @@ def send_contact_email(app: Flask,
         assert ezgmail.EMAIL_ADDRESS == app.config['SERVER_EMAIL_ADDRESS']
 
         ezgmail.send(recipient=to_address, subject=email_subject, body=email_body)
-        app.DATABASE.email_sent(message_id)
+        DATABASE.email_sent(message_id)
     except Exception as e:
         print(e)
         # notify of error (eg with login), using sms
