@@ -4,11 +4,11 @@ from flask import current_app
 from flask_wtf import (FlaskForm,
                        RecaptchaField,
                        )
-from wtforms import (StringField,
+from wtforms import (EmailField,
+                     StringField,
                      SubmitField,
                      TextAreaField,
                      )
-from wtforms.fields.html5 import EmailField
 from wtforms.validators import (DataRequired,
                                 Email,
                                 Length,
