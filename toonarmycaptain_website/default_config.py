@@ -10,3 +10,5 @@ SERVER_EMAIL_ADDRESS: str = 'some email to send contact emails from'
 CONTACT_EMAIL_ADDRESS: str = 'where to send contact emails to'
 
 CONTACT_CELL_NUMBER: str = 'some number'
+
+BLOG_URL: str = 'https://some.blog.url'

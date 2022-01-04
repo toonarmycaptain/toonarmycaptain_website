@@ -49,7 +49,7 @@ def blog():
 
     Links to dev.to blog. May in future embed blog/posts.
     """
-    return redirect(app.blog_url)
+    return redirect(app.config['BLOG_URL'])
 
 
 @bp.route('/contact/', methods=['GET', 'POST'])
@@ -69,8 +69,9 @@ def contact():
     if request.method == 'POST':
         'receive/validate format'
         if form.validate_on_submit():
+            DATABASE = app.config['DATABASE']
             'store form contents in databases'
-            message_id = app.DATABASE.store_contact(name=form.name.data,
+            message_id = DATABASE.store_contact(name=form.name.data,
                                                     email=form.email.data,
                                                     message=form.message.data)
             'using async:'

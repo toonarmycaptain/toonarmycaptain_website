@@ -62,4 +62,4 @@ def test_redirect_to_blog(test_client, test_app):
     """Redirects to blog."""
     response = test_client.get('blog/')
     assert response.status_code == 302
-    assert response.headers['Location'] == 'https://dev.to/toonarmycaptain/'
+    assert response.headers['Location'] == test_app.config['BLOG_URL']

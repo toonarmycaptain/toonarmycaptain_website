@@ -53,8 +53,9 @@ def test_send_contact_email(monkeypatch, test_client,
         def __init__(self):
             self.config = {'SERVER_EMAIL_ADDRESS': mock_from_address,
                            'CONTACT_EMAIL_ADDRESS': mock_to_address,
+                           'DATABASE': MockDatabase(),
                            }
-            self.DATABASE = MockDatabase()
+
 
     monkeypatch.setattr(email_notification, 'ezgmail', MockEZGmail())
     monkeypatch.setattr(email_notification, 'compose_notification_email', mock_compose_notification_email)
