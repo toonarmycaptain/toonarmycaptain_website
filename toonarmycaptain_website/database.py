@@ -3,6 +3,7 @@
 import sqlite3
 
 from pathlib import Path
+from typing import Optional
 
 
 class ContactDatabase:
@@ -97,7 +98,7 @@ class ContactDatabase:
         """
         Get person.id from email.
         Email column is lower-cased/case-insensitive.
-        
+
         :param db_connection: sqlite3.Connection
         :param email: str
         :return: float
@@ -150,7 +151,7 @@ class ContactDatabase:
         conn.commit()
         return person_id
 
-    def store_message_text(self, person_id: int, message_text: str) -> int:
+    def store_message_text(self, person_id: int, message_text: str) -> Optional[int]:
         """
         Store message text in database, return id of message.
 
@@ -168,7 +169,7 @@ class ContactDatabase:
         conn.commit()
         return message_id
 
-    def store_contact(self, name: str, email: str, message: str) -> int:
+    def store_contact(self, name: str, email: str, message: str) -> Optional[int]:
         """
 
         :param name: str
