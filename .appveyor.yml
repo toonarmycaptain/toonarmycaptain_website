@@ -4,14 +4,10 @@ environment:
     matrix:
         - PYTHON: "C:\\Python38"
         - PYTHON: "C:\\Python39"
+        - PYTHON: "C:\\Python310"
         - PYTHON: "C:\\Python38-x64"
         - PYTHON: "C:\\Python39-x64"
-
-matrix:
-    allow_failures:
-        # Until 3.9 is supported in appveyor.
-        - PYTHON: "C:\\Python39"
-        - PYTHON: "C:\\Python39-x64"
+        - PYTHON: "C:\\Python310-x64"
 
 init:
   - SET PATH=%PYTHON%;%PATH%
