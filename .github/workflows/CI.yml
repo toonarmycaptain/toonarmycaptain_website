@@ -10,12 +10,12 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, windows-latest]
-        python-version: ["3.8", "3.9", "3.10"]
+        python-version: ["3.8", "3.9", "3.10", "3.11"]
         experimental: [false]  # These versions must pass.
 
         include:
             - os: ubuntu-latest
-              python-version: "3.11-dev"
+              python-version: "nightly"
               experimental: true
 
 #            - os: windows-latest  ## Obviously deadsnakes is not compble with Windows.
@@ -28,13 +28,13 @@ jobs:
 
     - name: Set up production Python ${{ matrix.python-version }}
       uses: actions/setup-python@v2
-      if: "!endsWith(matrix.python-version, '-dev')"
+      if: "!endsWith(matrix.python-version, "nightly")"
       with:
         python-version: ${{ matrix.python-version }}
 
     - name: Set up dev Python ${{ matrix.python-version }}
       uses: deadsnakes/action@v2.1.1
-      if: endsWith(matrix.python-version, '-dev')
+      if: endsWith(matrix.python-version, 'nightly')
       with:
         python-version: ${{ matrix.python-version }}
 
