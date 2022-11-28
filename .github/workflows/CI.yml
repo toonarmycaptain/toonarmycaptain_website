@@ -24,9 +24,8 @@ jobs:
 
 
     steps:
-    - uses: actions/checkout@v2  # Checkout repo.
     - name: Set up production Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v2 # Checkout repo.
       if: "!endsWith(matrix.python-version, "nightly")"
       with:
         python-version: ${{ matrix.python-version }}
