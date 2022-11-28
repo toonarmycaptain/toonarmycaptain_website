@@ -15,7 +15,7 @@ jobs:
 
         include:
             - os: ubuntu-latest
-              python-version: "3.12"
+              python-version: "3.12-dev"
               experimental: true
 
 #            - os: windows-latest  ## Obviously deadsnakes is not compble with Windows.
