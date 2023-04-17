@@ -18,7 +18,7 @@ ABOUT_TEXT_STRING = (
     b'</html>')
 
 
-def create_app(test_config: dict = None) -> Flask:
+def create_app(test_config: dict|None = None) -> Flask:
     """
     Create application instance.
 
