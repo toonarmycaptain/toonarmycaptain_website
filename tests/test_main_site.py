@@ -6,7 +6,8 @@ def test_favicon(test_client, test_app):
     """Should return favicon."""
     response = test_client.get('/favicon.ico')
     assert response.status_code == 302
-    assert response.headers['Location'] in 'http://localhost/static/favicon.ico?mimetype=image%2Fvnd.microsoft.icon'
+    import urllib.parse
+    assert urllib.parse.unquote(response.headers['Location']) in 'http://localhost/static/favicon.ico?mimetype=image/vnd.microsoft.icon'
 
 
 def test_base_url_redirects_to_home(test_client, test_app):
