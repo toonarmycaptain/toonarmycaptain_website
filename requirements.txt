@@ -1,4 +1,4 @@
-email_validator==2.0.0.post2
+email_validator==2.1.0.post1
 EZGmail~=2022.10.10
 flask==3.0.0
-flask-wtf==1.1.1
+flask-wtf==1.2.1
