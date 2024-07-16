@@ -1,4 +1,4 @@
 email_validator==2.2.0
-EZGmail~=2024.8.11
+EZGmail~=2024.8.13
 flask==3.0.3
 flask-wtf==1.2.1
