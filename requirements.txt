@@ -2,3 +2,4 @@ email_validator==2.2.0
 EZGmail~=2024.12.3
 flask==3.1.1
 flask-wtf==1.2.2
+requests>=2.32.4 # not directly required, pinned by Snyk to avoid a vulnerability
