@@ -2,3 +2,5 @@ email_validator==2.2.0
 EZGmail~=2024.12.3
 flask==3.1.1
 flask-wtf==1.2.2
+protobuf>=4.25.8 # not directly required, pinned by Snyk to avoid a vulnerability
+urllib3>=2.5.0 # not directly required, pinned by Snyk to avoid a vulnerability
