@@ -2,6 +2,7 @@
 
 from flask import Flask
 from flask_wtf.csrf import CSRFProtect
+from werkzeug.middleware.proxy_fix import ProxyFix
 
 from .database import ContactDatabase
 
@@ -35,6 +36,8 @@ def create_app(test_config: dict|None = None) -> Flask:
         app.config.from_pyfile('app_config.py')
     else:  # Load testing config:
         app.config.update(test_config)
+
+    app.wsgi_app = ProxyFix(app.wsgi_app, x_host=1, x_proto=1)
 
     csrf = CSRFProtect(app)
 
