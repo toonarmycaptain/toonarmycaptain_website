@@ -1,7 +1,9 @@
 """Deploy git-tracked project files to PythonAnywhere via their API."""
 
+import argparse
 import subprocess
 import sys
+import time
 from pathlib import Path
 
 import requests
@@ -61,12 +63,20 @@ def upload_file(
     session: requests.Session, local_path: Path, remote_path: str
 ) -> bool:
     url = f"{API_BASE}/files/path{remote_path}"
-    with open(local_path, "rb") as f:
-        resp = session.post(url, files={"content": f})
-    if resp.status_code in (200, 201):
-        print(f"  OK: {remote_path}")
-        return True
-    print(f"  FAIL ({resp.status_code}): {remote_path} — {resp.text}")
+    for attempt in range(5):
+        with open(local_path, "rb") as f:
+            resp = session.post(url, files={"content": f})
+        if resp.status_code in (200, 201):
+            print(f"  OK: {remote_path}")
+            return True
+        if resp.status_code == 429:
+            wait = 2 ** attempt
+            print(f"  Throttled, retrying in {wait}s: {remote_path}")
+            time.sleep(wait)
+            continue
+        print(f"  FAIL ({resp.status_code}): {remote_path} — {resp.text}")
+        return False
+    print(f"  FAIL (throttled after retries): {remote_path}")
     return False
 
 
@@ -96,6 +106,7 @@ def main() -> None:
         remote = f"{REMOTE_DIR}/{rel_path}"
         if not upload_file(session, local, remote):
             failures += 1
+        time.sleep(0.3)
 
     if failures:
         print(f"\n{failures} file(s) failed to upload.")
