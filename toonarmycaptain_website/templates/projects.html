@@ -42,7 +42,6 @@
                 <img class="social_icon_text_height" src="{{ url_for('static', filename='github_icon_bw.svg') }}"
                      target="_blank" rel="noreferrer"
                      alt="xkcd_archiver - GitHub">xkcd_archiver</a> - Download and maintain an archive of xkcd comics
-            quickly.
             <br>
             Twist on typical web scraping starter project to quickly archive all of the images from the XKCD web comic,
             using the site’s JSON API and threading to download images directly rather than scraping HTML.
@@ -52,9 +51,8 @@
         </p>
         <p>
             <a href="https://ixlsearch.toonarmycaptain.com"
-               title="ixlsearch - improved search for ixl resources">
+               title="ixl search - improved search for ixl resources">
                 ixl search</a> - improvement over <a href="https://www.ixl.com">IXL</a>'s built-in search
-            quickly.
             <br>
             My wife was having trouble finding resources via <a href="https://www.ixl.com">IXL</a>'s search, so I built
             a (hopefully!) better search tool.
@@ -68,12 +66,13 @@
                title="pushbullet-calend - GitHub">
                 <img class="social_icon_text_height" src="{{ url_for('static', filename='github_icon_bw.svg') }}"
                      target="_blank" rel="noreferrer"
-                     alt="pushbullet-calend - GitHub">pushbullet-calend</a> - scheduled texts from calendar
+                     alt="pushbullet-calend - GitHub">pushbullet-calend</a> - scheduled texts from calendar entries
             <br>
             A relative needed reminding for events, and similarly I was forgetting to text, so I automated things.
             <br>
-                Created a simple DSL to put in Google calendar descriptions, and a daemon that polls the calendar and utilises <a href="https://www.pushbullet.com/">Pushbullet</a> to send text messages.
-                Extended using similar APIs to send me a text when I receive an email matching specific criteria, run with systemd.
+            Created a simple DSL to put in Google calendar descriptions, and a daemon that polls the calendar and utilises <a href="https://www.pushbullet.com/">Pushbullet</a> to send text messages.
+           <br>
+            Extended using similar APIs to send me a text when I receive an email matching specific criteria, run with systemd.
         </p>
     </div>
 {% endblock %}
