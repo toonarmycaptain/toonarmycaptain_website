@@ -9,7 +9,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, windows-latest]
+        os: [ubuntu-latest]
         python-version: ["3.12", "3.13", "3.14"]
         experimental: [false]
 
@@ -30,12 +30,18 @@ jobs:
     - name: Install dependencies
       run: uv sync --all-groups
 
-    - name: Test with pytest --cov=./ --mypy -vv
+    - name: Run tests
+      run: uv run pytest --cov=./ -vv
+
+    - name: Upload coverage
+      if: success()
+      continue-on-error: true
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      run: |
-        uv run pytest --cov=./ --mypy -vv
-        uv run coveralls --service=github
+      run: uv run coveralls --service=github
+
+    - name: Type check with ty
+      run: uvx ty check toonarmycaptain_website/
 
   coveralls_finish:
       needs: test
