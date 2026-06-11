@@ -17,8 +17,8 @@
                  target="_blank" rel="noreferrer"
                  alt="toonarmycaptain_website - GitHub">This website</a>
             <br>
-            Set up personal website, deployed on pythonanywhere, incorporating contact form and db
-            Learned further flask testing, db in a webapp, automated email, responsive HTML/CSS.
+            This website, originally deployed on pythonanywhere, incorporating contact form and db
+            One of my first projects learning flask testing, db in a webapp, automated email, responsive HTML/CSS.
         </p>
         <p>
             <a href="https://github.com/toonarmycaptain/dionysus"
@@ -37,30 +37,42 @@
             database to support varied db backend implementations (eg JSON files, SQLite).
         </p>
         <p>
-            <a href="https://github.com/toonarmycaptain/probable_immunity/"
-               title="probably_immunity - GitHub">
-                <img class="social_icon_text_height" src="{{ url_for('static', filename='github_icon_bw.svg') }}"
-                     target="_blank" rel="noreferrer"
-                     alt="probably_immunity - GitHub">probable_immunity</a> - Vaccine efficacy website
-            <br>
-            Website showing user possible chance of immunity to various illnesses and risk of contracting those
-            illnesses following exposure, vaccine efficacy.
-            <br>
-            Currently hosted on <a href="https://probableimmunity.pythonanywhere.com/immunity/"
-                                   target="_blank" rel="noreferrer">pythonanywhere</a>.
-        </p>
-        <p>
             <a href="https://github.com/toonarmycaptain/xkcd_archiver"
                title="xkcd_archiver - GitHub">
                 <img class="social_icon_text_height" src="{{ url_for('static', filename='github_icon_bw.svg') }}"
                      target="_blank" rel="noreferrer"
                      alt="xkcd_archiver - GitHub">xkcd_archiver</a> - Download and maintain an archive of xkcd comics
-            quickly.
             <br>
             Twist on typical web scraping starter project to quickly archive all of the images from the XKCD web comic,
             using the site’s JSON API and threading to download images directly rather than scraping HTML.
             <br>
-            Learned to use requests, Flask-WTF forms, parse JSON, effectively employ threading.
+            Learned to use requests, Flask-WTF forms, parse JSON, effectively employ threading. Iterated on over the
+            years to improve threading, save with image metadata, add a TUI.
+        </p>
+        <p>
+            <a href="https://ixlsearch.toonarmycaptain.com"
+               title="ixl search - improved search for ixl resources">
+                ixl search</a> - improvement over <a href="https://www.ixl.com">IXL</a>'s built-in search
+            <br>
+            My wife was having trouble finding resources via <a href="https://www.ixl.com">IXL</a>'s search, so I built
+            a (hopefully!) better search tool.
+            <br>
+            I used <a href="https://pypi.org/project/RapidFuzz/">RapidFuzz</a> with a custom (in-progress) synonym map,
+            to more effectively search their sitemap/index pages, cross-referenced against curricula/standards, and
+            scopable to grade/subject and state/standard.
+        </p>
+            <p>
+            <a href="https://github.com/toonarmycaptain/pushbullet-calend/"
+               title="pushbullet-calend - GitHub">
+                <img class="social_icon_text_height" src="{{ url_for('static', filename='github_icon_bw.svg') }}"
+                     target="_blank" rel="noreferrer"
+                     alt="pushbullet-calend - GitHub">pushbullet-calend</a> - scheduled texts from calendar entries
+            <br>
+            A relative needed reminding for events, and similarly I was forgetting to text, so I automated things.
+            <br>
+            Created a simple DSL to put in Google calendar descriptions, and a daemon that polls the calendar and utilises <a href="https://www.pushbullet.com/">Pushbullet</a> to send text messages.
+           <br>
+            Extended using similar APIs to send me a text when I receive an email matching specific criteria, run with systemd.
         </p>
     </div>
 {% endblock %}

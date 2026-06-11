@@ -147,6 +147,9 @@ class ContactDatabase:
                     """INSERT INTO person(name, email)
                        VALUES(?,?);
                        """, (name, email))
+                if cursor.lastrowid is None:
+                    # should never happen in production.
+                    raise RuntimeError("INSERT did not return a row ID")
                 person_id = cursor.lastrowid
         conn.commit()
         return person_id
