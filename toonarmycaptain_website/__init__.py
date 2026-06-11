@@ -37,7 +37,7 @@ def create_app(test_config: dict|None = None) -> Flask:
     else:  # Load testing config:
         app.config.update(test_config)
 
-    app.wsgi_app = ProxyFix(app.wsgi_app, x_host=1, x_proto=1)
+    app.wsgi_app = ProxyFix(app.wsgi_app, x_host=1, x_proto=1)  # type: ignore[method-assign]
 
     csrf = CSRFProtect(app)
 
