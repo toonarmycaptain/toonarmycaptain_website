@@ -5,6 +5,7 @@ from flask import (current_app as app,
                    redirect,
                    request,
                    render_template,
+                   session,
                    url_for,
                    )
 from flask_wtf.csrf import CSRFError
@@ -64,29 +65,28 @@ def contact():
     from toonarmycaptain_website.contact.form import ContactForm
     from toonarmycaptain_website.contact.email_notification import send_contact_email
 
-    form = ContactForm()
+    expired_form = session.pop('_expired_form', None)
+    form = ContactForm(data=expired_form) if expired_form else ContactForm()
 
     if request.method == 'POST':
-        'receive/validate format'
+        # receive/validate format
         if form.validate_on_submit():
             DATABASE = app.config['DATABASE']
-            'store form contents in databases'
+            # store form contents in databases
             message_id = DATABASE.store_contact(name=form.name.data,
                                                     email=form.email.data,
                                                     message=form.message.data)
-            'using async:'
-            '    send myself email'
+            # using async:
+            #    send myself email
             send_contact_email(app,
                                message_id=message_id,
                                contact_email=form.email.data,
                                contact_name=form.name.data,
                                message_body=form.message.data)
-            '    send myself text message'
+            # send myself text message
 
             flash("success message", 'successful_submission')
             return redirect(url_for('my_site.contact'))
-        # else:
-        #     Template will render form.errors
     return render_template('contact.html', form=form)
 
 
@@ -101,8 +101,12 @@ def handle_csrf_error(e):
     """
     Redirects user to requested page in event of CSRF Error.
 
+    Stashes form data in session so user doesn't lose their input.
     Assumes all routes are under my_site blueprint.
     """
+    if request.form:
+        session['_expired_form'] = {k: v for k, v in request.form.items() if k != 'csrf_token'}
+    flash("Your session expired. Please try again.", 'error')
     return redirect(url_for(f'my_site.{request.path[1:-1]}'))
 
 
