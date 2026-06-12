@@ -1,6 +1,5 @@
 """Deploy git-tracked project files to PythonAnywhere via their API."""
 
-import argparse
 import subprocess
 import sys
 import time
@@ -19,14 +18,8 @@ REMOTE_DIR = f"/home/{PA_USER}/toonarmycaptain_website"
 SECRETS_FILE = PROJECT_DIR / ".secrets"
 
 SKIP_PREFIXES = (
-    ".appveyor.yml",
-    ".coveragerc",
-    ".dcignore",
     ".github/",
-    ".pyup.yml",
-    ".whitesource",
-    "mypy.ini",
-    "requirements_dev.txt",
+    ".pre-commit-config.yaml",
     "tests/",
     "README.md",
     "deploy.py",
