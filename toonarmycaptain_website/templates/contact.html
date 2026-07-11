@@ -5,8 +5,6 @@
     <link rel="preload"
           href="{{ url_for('static', filename='github_logo.png') }}" as="image">
     <link rel="preload"
-          href="{{ url_for('static', filename='github_icon_bw.svg') }}" as="image">
-    <link rel="preload"
           href="{{ url_for('static', filename='ln_logo_128px.png') }}" as="image">
 {% endblock %}
 {% block body %}
@@ -54,27 +52,21 @@
     <br>
     <p class="center_text_block">Or find me on:</p>
     <ul class="contact_socials_link_list center_text_block">
-
-        <li>
-            <a href="https://twitter.com/toonarmycaptain" target="_blank" rel="noreferrer"
-               class="contact_social_logo twitter-follow-button"
-               data-size="large" data-show-count="false">Follow @toonarmycaptain</a>
-            <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
-
+        <li class="contact_social_item">
+            <a href="https://x.com/toonarmycaptain" target="_blank" rel="noreferrer">
+                <img class="contact_social_logo" src="{{ url_for('static', filename='x_logo_bw.svg') }}"
+                     title="X - @toonarmycaptain" alt="X - @toonarmycaptain"></a>
         </li>
         <li class="contact_social_item">
             <a href="https://github.com/toonarmycaptain/" target="_blank" rel="noreferrer">
                 <img class="contact_social_logo" src="{{ url_for('static', filename='github_logo.png') }}"
-                     title="GitHub - toonarmycaptain" alt="GitHub - toonarmycaptain"></a>
-            <a href="https://github.com/toonarmycaptain/">
-                <img class="contact_social_logo" src="{{ url_for('static', filename='github_icon_bw.svg') }}"
                      title="GitHub - toonarmycaptain" alt="GitHub - toonarmycaptain"></a>
         </li>
         <li class="contact_social_item">
             <a href="https://www.linkedin.com/in/davidantonini/" target="_blank" rel="noreferrer">
                 <img class="contact_social_logo" src="{{ url_for('static', filename='ln_logo_128px.png') }}"
                      title="David Antonini - LinkedIn" alt="David Antonini - LinkedIn"></a>
-
+        </li>
     </ul>
 
 {% endblock %}
