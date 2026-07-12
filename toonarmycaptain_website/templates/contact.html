@@ -1,11 +1,14 @@
 {% extends 'base.html' %}
 
-{% block header %}
-    {% block title %}Contact{% endblock %}
+{% block title %}Contact{% endblock %}
+
+{% block head %}
+    {{ super() }}
     <link rel="preload"
           href="{{ url_for('static', filename='github_logo.png') }}" as="image">
     <link rel="preload"
           href="{{ url_for('static', filename='ln_logo_128px.png') }}" as="image">
+    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 {% endblock %}
 {% block body %}
     <h1 class="line_breaking_title center_text_block">Contact</h1>
@@ -18,7 +21,7 @@
             <div id='name' class='form_element'>{{ render_field(form.name) }}</div>
             <div id='email' class='form_element'>{{ render_field(form.email) }}</div>
             <div id='message' class='form_element'>{{ render_field(form.message) }}</div>
-            {#        {{ render_field(form.recaptcha) }}#}
+            <div class='form_element cf-turnstile' data-sitekey="{{ config.TURNSTILE_SITE_KEY }}"></div>
             <div id='submit' class='contact_form_submit_button'> {{ render_field(form.submit) }}</div>
 
             {% with errors = get_flashed_messages(category_filter=["error"]) %}

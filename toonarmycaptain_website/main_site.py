@@ -10,6 +10,9 @@ from flask import (current_app as app,
                    )
 from flask_wtf.csrf import CSRFError
 
+from toonarmycaptain_website.contact.email_notification import send_contact_email
+from toonarmycaptain_website.contact.turnstile import verify_turnstile
+
 bp = Blueprint("my_site", __name__)
 
 
@@ -62,8 +65,9 @@ def contact():
     Returns successful message on form validation, error on error.
     """
 
+    # Import inside route because contact/form.py need to read current_app.config at
+    # request time (consider refactor to pass config into form?)
     from toonarmycaptain_website.contact.form import ContactForm
-    from toonarmycaptain_website.contact.email_notification import send_contact_email
 
     expired_form = session.pop('_expired_form', None)
     form = ContactForm(data=expired_form) if expired_form else ContactForm()
@@ -77,12 +81,16 @@ def contact():
                                                     email=form.email.data,
                                                     message=form.message.data)
             # using async:
-            #    send myself email
-            send_contact_email(app,
-                               message_id=message_id,
-                               contact_email=form.email.data,
-                               contact_name=form.name.data,
-                               message_body=form.message.data)
+            # Don't send email notification if flagged as spam
+            # [still save in db]
+            if verify_turnstile(request.form.get('cf-turnstile-response', ''),
+                                secret=app.config['TURNSTILE_SECRET_KEY'],
+                                remoteip=request.remote_addr):
+                send_contact_email(app,
+                                   message_id=message_id,
+                                   contact_email=form.email.data,
+                                   contact_name=form.name.data,
+                                   message_body=form.message.data)
             # send myself text message
 
             flash("success message", 'successful_submission')
