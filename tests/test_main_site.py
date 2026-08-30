@@ -1,6 +1,21 @@
 """ Test main routes. """
 import pytest
 
+from toonarmycaptain_website.utils import client_ip
+
+
+@pytest.mark.parametrize('headers, expected',
+                         [({'X-Real-IP': '203.0.113.7'}, '203.0.113.7'),  # Worker-forwarded visitor IP.
+                          ({'CF-Connecting-IP': '198.51.100.9'}, '198.51.100.9'),  # Direct-CF fallback.
+                          ({'X-Real-IP': '203.0.113.7',
+                            'CF-Connecting-IP': '198.51.100.9'}, '203.0.113.7'),  # X-Real-IP preferred.
+                          ({}, None),  # No proxy headers -> None, never the proxy remote_addr.
+                          ])
+def test_client_ip(test_app, headers, expected):
+    """client_ip reads the real visitor IP from proxy headers, never remote_addr."""
+    with test_app.test_request_context('/contact/', headers=headers):
+        assert client_ip() == expected
+
 
 def test_favicon(test_client, test_app):
     """Should return favicon."""

@@ -12,6 +12,7 @@ from flask_wtf.csrf import CSRFError
 
 from toonarmycaptain_website.contact.email_notification import send_contact_email
 from toonarmycaptain_website.contact.turnstile import verify_turnstile
+from toonarmycaptain_website.utils import client_ip
 
 bp = Blueprint("my_site", __name__)
 
@@ -78,7 +79,7 @@ def contact():
             DATABASE = app.config['DATABASE']
             captcha_passed = verify_turnstile(request.form.get('cf-turnstile-response', ''),
                                               secret=app.config['TURNSTILE_SECRET_KEY'],
-                                              remoteip=request.remote_addr)
+                                              remoteip=client_ip())
             # store form contents in databases, flagging spam rather than dropping it
             person_id = DATABASE.store_person(name=form.name.data,
                                               email=form.email.data)
