@@ -141,18 +141,24 @@ def test_store_person(empty_sqlite_database,
            WHERE id=?""", (returned_id,)).fetchone() == (returned_id, *resulting_person_row)
 
 
-def test_store_message_text(empty_sqlite_database):
+@pytest.mark.parametrize(
+    'captcha_passed',
+    [False,  # Flagged as spam.
+     True,  # Verified human.
+     ])
+def test_store_message_text(empty_sqlite_database, captcha_passed):
     test_db = empty_sqlite_database
     test_contact_id = test_db.store_person('test subject', 'test@subject.com')
     test_message = 'some arbitrary message'
-    message_id = test_db.store_message_text(test_contact_id, test_message)
+    message_id = test_db.store_message_text(test_contact_id, test_message,
+                                            captcha_passed=captcha_passed)
 
     assert test_db._connection().cursor().execute(
-        """SELECT * 
+        """SELECT *
            FROM message
            WHERE id=?
            """, (message_id,)).fetchone() == (message_id, test_contact_id, test_message,
-                                              False, False)  # Email, SMS not sent.
+                                              False, False, captcha_passed)  # Email, SMS not sent.
 
 
 def test_store_contact(empty_sqlite_database):
@@ -213,7 +219,7 @@ def test_store_contact_integration_unmocked(empty_sqlite_database):
            FROM message
            WHERE id=?
            """, (test_message_id,)).fetchone() == (test_message_id, test_contact_id, test_message_text,
-                                                   False, False)  # Email, SMS not sent.
+                                                   False, False, False)  # Email, SMS not sent, captcha not passed.
 
 
 def test_email_sent(empty_sqlite_database):
@@ -230,7 +236,7 @@ def test_email_sent(empty_sqlite_database):
            """, (test_message_id,)).fetchone() == (test_message_id,
                                                    test_person_id,
                                                    test_message_text,
-                                                   0, 0)  # Email, SMS not sent.
+                                                   0, 0, 0)  # Email, SMS not sent, captcha not passed.
 
     # Add email sent:
     test_db.email_sent(test_message_id)
@@ -256,7 +262,7 @@ def test_sms_sent(empty_sqlite_database):
            """, (test_message_id,)).fetchone() == (test_message_id,
                                                    test_person_id,
                                                    test_message_text,
-                                                   0, 0)  # Email, SMS not sent.
+                                                   0, 0, 0)  # Email, SMS not sent, captcha not passed.
 
     # Add sms sent:
     test_db.sms_sent(test_message_id)

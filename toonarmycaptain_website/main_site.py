@@ -76,16 +76,17 @@ def contact():
         # receive/validate format
         if form.validate_on_submit():
             DATABASE = app.config['DATABASE']
-            # store form contents in databases
-            message_id = DATABASE.store_contact(name=form.name.data,
-                                                    email=form.email.data,
-                                                    message=form.message.data)
-            # using async:
-            # Don't send email notification if flagged as spam
-            # [still save in db]
-            if verify_turnstile(request.form.get('cf-turnstile-response', ''),
-                                secret=app.config['TURNSTILE_SECRET_KEY'],
-                                remoteip=request.remote_addr):
+            captcha_passed = verify_turnstile(request.form.get('cf-turnstile-response', ''),
+                                              secret=app.config['TURNSTILE_SECRET_KEY'],
+                                              remoteip=request.remote_addr)
+            # store form contents in databases, flagging spam rather than dropping it
+            person_id = DATABASE.store_person(name=form.name.data,
+                                              email=form.email.data)
+            message_id = DATABASE.store_message_text(person_id=person_id,
+                                                     message_text=form.message.data,
+                                                     captcha_passed=captcha_passed)
+            # Don't send email notification if flagged as spam [still saved in db]
+            if captcha_passed:
                 send_contact_email(app,
                                    message_id=message_id,
                                    contact_email=form.email.data,

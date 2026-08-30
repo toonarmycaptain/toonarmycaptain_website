@@ -88,9 +88,17 @@ class ContactDatabase:
                                                       ),
                          email_sent BOOLEAN NOT NULL CHECK(email_sent IN (0,1)) DEFAULT 0, -- Default False,
                          sms_sent BOOLEAN NOT NULL CHECK(sms_sent IN (0,1)) DEFAULT 0,     -- Stored as 1,0.
+                         captcha_passed BOOLEAN NOT NULL DEFAULT 0,  -- 1 = verified human; spam stays 0.
                          FOREIGN KEY (person_id) REFERENCES person(id)
                          );
                          """)
+            # Migrate older dbs: CREATE TABLE IF NOT EXISTS won't add a column to
+            # a message table that predates captcha_passed, so add it in place.
+            existing_columns = [row[1] for row in
+                                conn.cursor().execute("PRAGMA table_info(message)").fetchall()]
+            if 'captcha_passed' not in existing_columns:
+                conn.cursor().execute(
+                    "ALTER TABLE message ADD COLUMN captcha_passed BOOLEAN NOT NULL DEFAULT 0")
         conn.commit()
         conn.close()
 
@@ -154,20 +162,22 @@ class ContactDatabase:
         conn.commit()
         return person_id
 
-    def store_message_text(self, person_id: int, message_text: str) -> Optional[int]:
+    def store_message_text(self, person_id: int, message_text: str,
+                           captcha_passed: bool = False) -> Optional[int]:
         """
         Store message text in database, return id of message.
 
         :param person_id: int
         :param message_text: str
+        :param captcha_passed: bool
         :return: int: message.id
         """
         with self._connection() as conn:
             cursor = conn.cursor()
             cursor.execute(
-                """INSERT INTO message(person_id, contents)
-                   VALUES(?,?)
-                   """, (person_id, message_text))
+                """INSERT INTO message(person_id, contents, captcha_passed)
+                   VALUES(?,?,?)
+                   """, (person_id, message_text, captcha_passed))
             message_id = cursor.lastrowid
         conn.commit()
         return message_id
