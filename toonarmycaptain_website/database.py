@@ -2,6 +2,7 @@
 
 import sqlite3
 
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Optional
 
@@ -74,8 +75,9 @@ class ContactDatabase:
                                                           length("name") <= 255
                                                           ),
                          alternate_names TEXT CHECK(typeof("name") = 'text' AND
-                                                    length("name") <= 510 
-                                                    )                                                   
+                                                    length("name") <= 510
+                                                    ),
+                         created_at TEXT  -- ISO 8601 UTC, set on first insert in store_person; NULL for pre-existing rows.
                          );
                          """)
             conn.cursor().execute(
@@ -89,9 +91,12 @@ class ContactDatabase:
                          email_sent BOOLEAN NOT NULL CHECK(email_sent IN (0,1)) DEFAULT 0, -- Default False,
                          sms_sent BOOLEAN NOT NULL CHECK(sms_sent IN (0,1)) DEFAULT 0,     -- Stored as 1,0.
                          captcha_passed BOOLEAN NOT NULL DEFAULT 0,  -- 1 = verified human; spam stays 0.
+                         received_at TEXT,  -- ISO 8601 UTC, set by store_message_text; NULL for pre-existing rows.
                          FOREIGN KEY (person_id) REFERENCES person(id)
                          );
                          """)
+
+
             # Migrate older dbs: CREATE TABLE IF NOT EXISTS won't add a column to
             # a message table that predates captcha_passed, so add it in place.
             existing_columns = [row[1] for row in
@@ -99,6 +104,16 @@ class ContactDatabase:
             if 'captcha_passed' not in existing_columns:
                 conn.cursor().execute(
                     "ALTER TABLE message ADD COLUMN captcha_passed BOOLEAN NOT NULL DEFAULT 0")
+            # Use TEXT bc SQLite doesn't have date/time types, nullable to account for existing missing data.
+            if 'received_at' not in existing_columns:
+                conn.cursor().execute(
+                    "ALTER TABLE message ADD COLUMN received_at TEXT")
+            person_columns = [row[1] for row in
+                              conn.cursor().execute("PRAGMA table_info(person)").fetchall()]
+            # Use TEXT bc SQLite doesn't have date/time types, nullable to account for existing missing data.
+            if 'created_at' not in person_columns:
+                conn.cursor().execute(
+                    "ALTER TABLE person ADD COLUMN created_at TEXT")
         conn.commit()
         conn.close()
 
@@ -151,10 +166,11 @@ class ContactDatabase:
                            """, (alternate_names, person_id,))
 
             else:  # Create new record:
+                created_at = datetime.now(timezone.utc).replace(microsecond=0).isoformat()
                 cursor.execute(
-                    """INSERT INTO person(name, email)
-                       VALUES(?,?);
-                       """, (name, email))
+                    """INSERT INTO person(name, email, created_at)
+                       VALUES(?,?,?);
+                       """, (name, email, created_at))
                 if cursor.lastrowid is None:
                     # should never happen in production.
                     raise RuntimeError("INSERT did not return a row ID")
@@ -172,12 +188,13 @@ class ContactDatabase:
         :param captcha_passed: bool
         :return: int: message.id
         """
+        received_at = datetime.now(timezone.utc).replace(microsecond=0).isoformat()
         with self._connection() as conn:
             cursor = conn.cursor()
             cursor.execute(
-                """INSERT INTO message(person_id, contents, captcha_passed)
-                   VALUES(?,?,?)
-                   """, (person_id, message_text, captcha_passed))
+                """INSERT INTO message(person_id, contents, captcha_passed, received_at)
+                   VALUES(?,?,?,?)
+                   """, (person_id, message_text, captcha_passed, received_at))
             message_id = cursor.lastrowid
         conn.commit()
         return message_id
