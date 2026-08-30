@@ -1,8 +1,12 @@
 """ Send notification via email."""
+import logging
+
 from typing import Tuple
 import ezgmail
 
 from flask import Flask
+
+logger = logging.getLogger(__name__)
 
 
 def send_contact_email(app: Flask,
@@ -40,8 +44,9 @@ def send_contact_email(app: Flask,
 
         ezgmail.send(recipient=to_address, subject=email_subject, body=email_body)
         DATABASE.email_sent(message_id)
-    except Exception as e:
-        print(e)
+        logger.info(f"Contact email sent for message {message_id}")
+    except Exception:
+        logger.exception(f"Contact email send failed for message {message_id}")
         # notify of error (eg with login), using sms
 
 

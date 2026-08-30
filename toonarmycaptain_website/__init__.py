@@ -1,4 +1,5 @@
 """ App factory """
+import logging
 
 from flask import Flask
 from flask_wtf.csrf import CSRFProtect
@@ -36,6 +37,11 @@ def create_app(test_config: dict|None = None) -> Flask:
         app.config.from_pyfile('app_config.py')
     else:  # Load testing config:
         app.config.update(test_config)
+
+    # INFO and up to stderr (Flask's default handler); PythonAnywhere captures
+    # stderr in the server log. Module loggers under toonarmycaptain_website.*
+    # propagate to this logger.
+    app.logger.setLevel(logging.INFO)
 
     app.wsgi_app = ProxyFix(app.wsgi_app, x_host=1, x_proto=1)  # ty: ignore[invalid-assignment]
 

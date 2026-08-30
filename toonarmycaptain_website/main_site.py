@@ -85,6 +85,7 @@ def contact():
             message_id = DATABASE.store_message_text(person_id=person_id,
                                                      message_text=form.message.data,
                                                      captcha_passed=captcha_passed)
+            app.logger.info(f"Contact message {message_id} stored, captcha_passed={captcha_passed}")
             # Don't send email notification if flagged as spam [still saved in db]
             if captcha_passed:
                 send_contact_email(app,
@@ -113,6 +114,7 @@ def handle_csrf_error(e):
     Stashes form data in session so user doesn't lose their input.
     Assumes all routes are under my_site blueprint.
     """
+    app.logger.warning(f"CSRF error on {request.path}: {e.description}")
     if request.form:
         session['_expired_form'] = {k: v for k, v in request.form.items() if k != 'csrf_token'}
     flash("Your session expired. Please try again.", 'error')
