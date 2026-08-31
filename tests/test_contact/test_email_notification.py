@@ -1,4 +1,6 @@
 """ Test email_notification.py """
+import smtplib
+
 import pytest
 
 from flask import Flask
@@ -10,10 +12,11 @@ from toonarmycaptain_website.contact.email_notification import (send_contact_ema
 @pytest.mark.parametrize('exception_thrown', [False, True])
 def test_send_contact_email(monkeypatch, test_client,
                             exception_thrown):
-    """Email is sent with correct metadata and logged in db."""
+    """Email is sent via Gmail SMTP with correct metadata and logged in db."""
 
     mock_from_address = 'mock@from.address'
     mock_to_address = 'mock@to.address'
+    mock_app_password = 'mock app password'
 
     test_message_id = 314
     test_contact_email = 'contact@host.tld'
@@ -23,7 +26,9 @@ def test_send_contact_email(monkeypatch, test_client,
 
     mock_call = {
         'mock_compose_notification_email': False,
-        'app.send': False,
+        'smtp.starttls': False,
+        'smtp.login': False,
+        'smtp.send_message': False,
         'app.DATABASE.email_sent': False,
     }
 
@@ -33,16 +38,30 @@ def test_send_contact_email(monkeypatch, test_client,
             test_contact_email, test_contact_name, test_message_body)
         return mock_email_subject, test_message_body
 
-    class MockEZGmail:
-        def __init__(self):
-            self.EMAIL_ADDRESS = mock_from_address
+    class MockSMTP:
+        def __init__(self, host, port):
+            assert (host, port) == (email_notification.SMTP_HOST, email_notification.SMTP_PORT)
 
-        def send(self, recipient, subject, body):
-            mock_call['app.send'] = True
+        def __enter__(self):
+            return self
+
+        def __exit__(self, *exc):
+            return False
+
+        def starttls(self):
+            mock_call['smtp.starttls'] = True
+
+        def login(self, user, password):
+            mock_call['smtp.login'] = True
+            assert (user, password) == (mock_from_address, mock_app_password)
+
+        def send_message(self, message):
+            mock_call['smtp.send_message'] = True
             if exception_thrown:
-                raise ValueError
+                raise smtplib.SMTPException
             # Don't test body, as is subject to change.
-            assert (recipient, subject) == (mock_to_address, mock_email_subject)
+            assert (message['From'], message['To'], message['Subject']) == (
+                mock_from_address, mock_to_address, mock_email_subject)
 
     class MockDatabase:
         def email_sent(self, message_id):
@@ -53,11 +72,11 @@ def test_send_contact_email(monkeypatch, test_client,
         def __init__(self):
             self.config = {'SERVER_EMAIL_ADDRESS': mock_from_address,
                            'CONTACT_EMAIL_ADDRESS': mock_to_address,
+                           'SMTP_APP_PASSWORD': mock_app_password,
                            'DATABASE': MockDatabase(),
                            }
 
-
-    monkeypatch.setattr(email_notification, 'ezgmail', MockEZGmail())
+    monkeypatch.setattr(email_notification.smtplib, 'SMTP', MockSMTP)
     monkeypatch.setattr(email_notification, 'compose_notification_email', mock_compose_notification_email)
 
     assert send_contact_email(app=MockApp(),
@@ -67,7 +86,11 @@ def test_send_contact_email(monkeypatch, test_client,
                               message_body=test_message_body,
                               ) is None
 
-    assert all([call for call in mock_call])
+    if exception_thrown:
+        assert mock_call['smtp.send_message'] is True
+        assert mock_call['app.DATABASE.email_sent'] is False
+    else:
+        assert all(mock_call.values())
 
 
 def test_compose_notification_email():
