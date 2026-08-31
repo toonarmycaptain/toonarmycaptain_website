@@ -60,8 +60,8 @@ def test_send_contact_email(monkeypatch, test_client,
             if exception_thrown:
                 raise smtplib.SMTPException
             # Don't test body, as is subject to change.
-            assert (message['From'], message['To'], message['Subject']) == (
-                mock_from_address, mock_to_address, mock_email_subject)
+            assert (message['From'], message['To'], message['Subject'], message['Reply-To']) == (
+                mock_from_address, mock_to_address, mock_email_subject, test_contact_email)
 
     class MockDatabase:
         def email_sent(self, message_id):

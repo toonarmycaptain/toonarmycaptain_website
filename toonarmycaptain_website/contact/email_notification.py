@@ -43,6 +43,7 @@ def send_contact_email(app: Flask,
     message['From'] = from_address
     message['To'] = to_address
     message['Subject'] = email_subject
+    message['Reply-To'] = contact_email
     message.set_content(email_body)
 
     try:
