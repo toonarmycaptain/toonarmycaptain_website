@@ -14,8 +14,6 @@ from wtforms.validators import (DataRequired,
                                 Length,
                                 )
 
-CONTACT_MESSAGE_MAX_LENGTH = current_app.config['CONTACT_MESSAGE_MAX_LENGTH']
-
 
 class ContactForm(FlaskForm):
     """Contact form."""
@@ -35,15 +33,16 @@ class ContactForm(FlaskForm):
                        render_kw={'minlength': 6, 'maxlength': 255}
                        )
 
-    message = TextAreaField(label='Message',
-                            validators=[Length(min=4, max=CONTACT_MESSAGE_MAX_LENGTH,
-                                               message=f"Message must be between 4 "
-                                                       f"and {CONTACT_MESSAGE_MAX_LENGTH} "
-                                                       f'characters.',
-                                               ),
-                                        DataRequired()],
-                            render_kw={'minlength': 4,
-                                       'maxlength': CONTACT_MESSAGE_MAX_LENGTH},
-                            )
+    message = TextAreaField(label='Message')
     # recaptcha = RecaptchaField()
     submit = SubmitField('Submit')
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        max_length = current_app.config['CONTACT_MESSAGE_MAX_LENGTH']
+        self.message.validators = [
+            Length(min=4, max=max_length,
+                   message=f"Message must be between 4 and {max_length} characters."),
+            DataRequired(),
+        ]
+        self.message.render_kw = {'minlength': 4, 'maxlength': max_length}
