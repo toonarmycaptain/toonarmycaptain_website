@@ -40,7 +40,7 @@ class ContactForm(FlaskForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         max_length = current_app.config['CONTACT_MESSAGE_MAX_LENGTH']
-        self.message.validators = [
+        self.message.validators = [  # ty: ignore[invalid-assignment]
             Length(min=4, max=max_length,
                    message=f"Message must be between 4 and {max_length} characters."),
             DataRequired(),

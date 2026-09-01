@@ -10,7 +10,7 @@ from flask import (current_app as app,
                    )
 from flask_wtf.csrf import CSRFError
 
-from toonarmycaptain_website.contact.email_notification import send_contact_email
+from toonarmycaptain_website.contact.email_notification import send_contact_email_async
 from toonarmycaptain_website.contact.form import ContactForm
 from toonarmycaptain_website.contact.turnstile import verify_turnstile
 from toonarmycaptain_website.utils import client_ip
@@ -85,11 +85,11 @@ def contact():
             app.logger.info(f"Contact message {message_id} stored, captcha_passed={captcha_passed}")
             # Don't send email notification if flagged as spam [still saved in db]
             if captcha_passed:
-                send_contact_email(app,
-                                   message_id=message_id,
-                                   contact_email=form.email.data,
-                                   contact_name=form.name.data,
-                                   message_body=form.message.data)
+                send_contact_email_async(app._get_current_object(),   # ty: ignore[unresolved-attribute]
+                                         message_id=message_id,
+                                         contact_email=form.email.data,
+                                         contact_name=form.name.data,
+                                         message_body=form.message.data)
             # send myself text message
 
             flash("success message", 'successful_submission')

@@ -3,6 +3,7 @@ import logging
 import smtplib
 
 from email.message import EmailMessage
+from threading import Thread
 from typing import Tuple
 
 from flask import Flask
@@ -11,6 +12,7 @@ logger = logging.getLogger(__name__)
 
 SMTP_HOST = "smtp.gmail.com"
 SMTP_PORT = 587
+SMTP_TIMEOUT = 10  # seconds, per socket operation
 
 
 def send_contact_email(app: Flask,
@@ -47,7 +49,7 @@ def send_contact_email(app: Flask,
     message.set_content(email_body)
 
     try:
-        with smtplib.SMTP(SMTP_HOST, SMTP_PORT) as smtp:
+        with smtplib.SMTP(SMTP_HOST, SMTP_PORT, timeout=SMTP_TIMEOUT) as smtp:
             smtp.starttls()
             smtp.login(from_address, app.config['SMTP_APP_PASSWORD'])
             smtp.send_message(message)
@@ -56,6 +58,27 @@ def send_contact_email(app: Flask,
     except Exception:
         logger.exception(f"Contact email send failed for message {message_id}")
         # notify of error (eg with login), using sms
+
+
+def send_contact_email_async(app: Flask,
+                             message_id: int,
+                             contact_email: str, contact_name: str, message_body: str) -> None:
+    """
+    Dispatch send_contact_email on a background thread so the request doesn't
+    block on the SMTP round-trip. Pass the real app object (not the current_app
+    proxy, which is unbound outside the request thread).
+
+    :param app: Flask
+    :param message_id: int
+    :param contact_email: str
+    :param contact_name: str
+    :param message_body: str
+    :return: None
+    """
+    Thread(target=send_contact_email,
+           args=(app, message_id, contact_email, contact_name, message_body),
+           daemon=True,
+           ).start()
 
 
 def compose_notification_email(contact_email: str, contact_name: str, message_body: str

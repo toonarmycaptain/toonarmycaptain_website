@@ -39,8 +39,9 @@ def test_send_contact_email(monkeypatch, test_client,
         return mock_email_subject, test_message_body
 
     class MockSMTP:
-        def __init__(self, host, port):
-            assert (host, port) == (email_notification.SMTP_HOST, email_notification.SMTP_PORT)
+        def __init__(self, host, port, timeout):
+            assert (host, port, timeout) == (
+                email_notification.SMTP_HOST, email_notification.SMTP_PORT, email_notification.SMTP_TIMEOUT)
 
         def __enter__(self):
             return self
@@ -108,3 +109,28 @@ def test_compose_notification_email():
                                f'from {test_contact_name}\n'
                                f'{test_contact_email}'
                                )
+
+
+def test_send_contact_email_async(monkeypatch):
+    """Async dispatch runs send_contact_email on a daemon background thread."""
+    recorded = {}
+
+    class FakeThread:
+        def __init__(self, target, args, daemon):
+            self.target = target
+            self.args = args
+            recorded['daemon'] = daemon
+
+        def start(self):
+            self.target(*self.args)
+
+    def fake_send(app, message_id, contact_email, contact_name, message_body):
+        recorded['call'] = (app, message_id, contact_email, contact_name, message_body)
+
+    monkeypatch.setattr(email_notification, 'Thread', FakeThread)
+    monkeypatch.setattr(email_notification, 'send_contact_email', fake_send)
+
+    email_notification.send_contact_email_async('app', 7, 'c@e.tld', 'Name', 'body')
+
+    assert recorded['call'] == ('app', 7, 'c@e.tld', 'Name', 'body')
+    assert recorded['daemon'] is True
