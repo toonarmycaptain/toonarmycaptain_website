@@ -16,3 +16,5 @@ TURNSTILE_SECRET_KEY: str = 'turnstile-secret-key'   # private - server-side ver
 CONTACT_CELL_NUMBER: str = 'some number'
 
 BLOG_URL: str = 'https://some.blog.url'
+
+RESUME_DIR = Path('whereever/the/resumes/are')

@@ -23,6 +23,9 @@
           href="{{ url_for('static', filename='ln_icon_bw.svg') }}"
           as="image">
     <link rel="preload"
+          href="{{ url_for('static', filename='resume_icon_bw.svg') }}"
+          as="image">
+    <link rel="preload"
           href="{{ url_for('static', filename='dev_to.svg') }}"
           as="image">
 
@@ -107,6 +110,12 @@
                 <img class="footer_social_icon image_enlarge_on_hover"
                      src="{{ url_for('static', filename='ln_icon_bw.svg') }}"
                      title="David Antonini - LinkedIn" alt="David Antonini - LinkedIn"></a>
+        </li>
+        <li class="footer_social_item">
+            <a href="{{ url_for('my_site.resume') }}" rel="nofollow" target="_blank">
+                <img class="footer_social_icon image_enlarge_on_hover"
+                     src="{{ url_for('static', filename='resume_icon_bw.svg') }}"
+                     title="David Antonini - Résumé" alt="David Antonini - Résumé"></a>
         </li>
 {#        <li class="footer_social_item">
             <a href=blog_url>

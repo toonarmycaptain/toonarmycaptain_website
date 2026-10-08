@@ -1,10 +1,12 @@
 """main_site.py"""
 from flask import (current_app as app,
+                   abort,
                    Blueprint,
                    flash,
                    redirect,
                    request,
                    render_template,
+                   send_from_directory,
                    session,
                    url_for,
                    )
@@ -103,6 +105,36 @@ def about():
     return render_template('about.html')
 
 
+RESUME_FILENAME = 'David_Antonini_resume'
+RESUME_FORMATS = {'pdf', 'md'}
+
+
+@bp.route('/resume/', methods=['GET'])
+def resume():
+    """Resume defaults to PDF."""
+    return redirect(url_for('my_site.resume_file', fmt='pdf'))
+
+
+@bp.route('/resume/<fmt>', methods=['GET'])
+def resume_file(fmt: str):
+    """
+    Serve the latest resume build in the given format.
+
+    Files are uploaded to RESUME_DIR by the resume repo's CI.
+    PDF opens in the browser; other formats download.
+    """
+    if fmt not in RESUME_FORMATS:
+        abort(404)
+    response = send_from_directory(app.config['RESUME_DIR'],
+                                   f'{RESUME_FILENAME}.{fmt}',
+                                   as_attachment=fmt != 'pdf',  # pdf displays in the browser by default, .md downloads.
+                                   )
+    # Sent as a header rather than disallowed in robots.txt: crawlers never fetch
+    # a disallowed URL, so they'd never see the noindex and could still list it.
+    response.headers['X-Robots-Tag'] = 'noindex, nofollow, noarchive'
+    return response
+
+
 @bp.errorhandler(CSRFError)
 def handle_csrf_error(e):
     """
@@ -117,11 +149,6 @@ def handle_csrf_error(e):
     flash("Your session expired. Please try again.", 'error')
     return redirect(url_for(f'my_site.{request.path[1:-1]}'))
 
-
-@bp.route('/adam_todo/', methods=['GET'])
-def adam_todo():
-    """Adam's stuff."""
-    return render_template('adam_todo.html')
 
 
 if __name__ == '__main__':

@@ -79,3 +79,47 @@ def test_redirect_to_blog(test_client, test_app):
     response = test_client.get('blog/')
     assert response.status_code == 302
     assert response.headers['Location'] in test_app.config['BLOG_URL']
+
+
+@pytest.fixture
+def resume_dir(test_app, tmp_path):
+    """Point RESUME_DIR at a temp dir holding dummy resume builds."""
+    (tmp_path / 'David_Antonini_resume.pdf').write_bytes(b'%PDF-1.7 dummy')
+    (tmp_path / 'David_Antonini_resume.md').write_text('# David Antonini')
+    test_app.config['RESUME_DIR'] = tmp_path
+    return tmp_path
+
+
+def test_resume_redirects_to_pdf(test_client, test_app):
+    """Bare /resume/ should go to the PDF."""
+    response = test_client.get('/resume/')
+    assert response.status_code == 302
+    assert response.headers['Location'].endswith('/resume/pdf')
+
+
+def test_resume_pdf_inline(test_client, resume_dir):
+    """PDF is served inline so it opens in the browser."""
+    response = test_client.get('/resume/pdf')
+    assert response.status_code == 200
+    assert response.mimetype == 'application/pdf'
+    assert 'attachment' not in response.headers.get('Content-Disposition', '')
+    assert response.data == b'%PDF-1.7 dummy'
+
+
+def test_resume_md_download(test_client, resume_dir):
+    """Non-PDF formats download."""
+    response = test_client.get('/resume/md')
+    assert response.status_code == 200
+    assert response.headers['Content-Disposition'].startswith('attachment')
+
+
+def test_resume_unknown_format_404(test_client, resume_dir):
+    """Formats outside the allowed set 404, even if a file exists."""
+    (resume_dir / 'David_Antonini_resume.docx').write_bytes(b'docx')
+    assert test_client.get('/resume/docx').status_code == 404
+
+
+def test_resume_missing_file_404(test_client, test_app, tmp_path):
+    """No build uploaded yet -> 404."""
+    test_app.config['RESUME_DIR'] = tmp_path
+    assert test_client.get('/resume/pdf').status_code == 404
