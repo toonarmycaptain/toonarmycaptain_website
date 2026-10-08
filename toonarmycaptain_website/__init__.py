@@ -60,7 +60,7 @@ def create_app(test_config: dict|None = None) -> Flask:
     def blog_url() -> dict:
         return dict(blog_url=app.config['BLOG_URL'])
 
-    @app.route('/about_text/')
+    @app.route('/about-text/')
     def about_text() -> bytes:
         """
         Basic about text, mainly used for testing.

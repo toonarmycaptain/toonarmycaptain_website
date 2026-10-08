@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+
+    {% block header %}
+      {% block title %}Error - {{ code }} {{ name }}{% endblock %}
+    {% endblock %}
+
+
+{% block body %}
+    <div class="center_text_block">
+        <h1 class="line_breaking_title">Error - {{ code }} {{ name }}</h1>
+            <p>{{ error_message }}</p>
+            <p>If this is something I could/should fix, please don't hesitate to <a href="{{ url_for("my_site.contact") }}">contact me</a>.</p>
+    </div>
+{% endblock %}
