@@ -89,6 +89,8 @@ body {
 /* #Projects */
 .social_icon_text_height {
     height: 1.6ex;
+    /* Reserves the icon's width before it loads, so text doesn't shift when it arrives. */
+    aspect-ratio: 1;
     margin-right: 0.3em;
 }
 
