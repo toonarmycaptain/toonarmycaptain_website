@@ -10,12 +10,12 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest]
-        python-version: ["3.13", "3.14"]
+        python-version: ["3.13", "3.14", "3.15"]
         experimental: [false]
 
         include:
             - os: ubuntu-latest
-              python-version: "3.15"
+              python-version: "3.16"
               experimental: true
 
     steps:
@@ -23,9 +23,8 @@ jobs:
 
     - name: Install uv
       uses: astral-sh/setup-uv@v6
-
-    - name: Set up Python ${{ matrix.python-version }}
-      run: uv python install ${{ matrix.python-version }}
+      with:
+        python-version: ${{ matrix.python-version }}
 
     - name: Install dependencies
       run: uv sync --all-groups
