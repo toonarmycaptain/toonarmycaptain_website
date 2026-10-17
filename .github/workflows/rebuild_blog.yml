@@ -1,0 +1,18 @@
+name: Rebuild blog
+
+# The blog renders this site's header and footer at build time. Any app change can alter them
+# (templates, CSS, icons, routes), so rebuild the blog on all of them; a rebuild is cheap.
+on:
+  push:
+    branches: [master]
+    paths:
+      - 'toonarmycaptain_website/**'
+
+jobs:
+  rebuild:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Start the blog's deploy workflow
+      env:
+        GH_TOKEN: ${{ secrets.BLOG_REBUILD_TOKEN }}
+      run: gh workflow run deploy.yml --repo toonarmycaptain/toonarmycaptain_blog_posts --ref master
