@@ -15,15 +15,18 @@
 
 }
 
+/* System colours follow the host page's color-scheme, so the navbar matches this site in either
+   scheme and the blog in whichever scheme it uses. A page that sets its own background colour
+   passes it in as --page_background. */
 .navbar_item {
-    background: white;
+    background: var(--page_background, Canvas);
     display: inline;
     float: right;
 }
 
 .navbar_link {
     display: block;
-    color: black;
+    color: CanvasText;
     padding: 8px;
     text-align: center;
     text-decoration: none;
@@ -31,8 +34,8 @@
 }
 
 .navbar_item .navbar_link:hover {
-    color: white;
-    background-color: black;
+    color: Canvas;
+    background-color: CanvasText;
 }
 
 .nav_active_page {
