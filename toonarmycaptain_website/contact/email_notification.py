@@ -1,8 +1,18 @@
 """ Send notification via email."""
+import logging
+import smtplib
+
+from email.message import EmailMessage
+from threading import Thread
 from typing import Tuple
-import ezgmail
 
 from flask import Flask
+
+logger = logging.getLogger(__name__)
+
+SMTP_HOST = "smtp.gmail.com"
+SMTP_PORT = 587
+SMTP_TIMEOUT = 10  # seconds, per socket operation
 
 
 def send_contact_email(app: Flask,
@@ -11,16 +21,11 @@ def send_contact_email(app: Flask,
     """
     Forward contact via email, from server address to contact address.
 
-    NB EZGmail requires pre-setup with a credentials.json and token.json, and
-    previously run ezgmail.init(), which must be obtained on a personal machine,
-    as PythonAnywhere's server does not permit operations needed to
-    authenticate. These credentials are obtained from
-    https://console.cloud.google.com/apis/dashboard and a Desktop application
-    type credential must be selected (since the auth is being done on a personal
-    machine). The credentials must be placed in the top folder, with
-    README.md/requirements.txt etc.
+    Sent via Gmail SMTP authenticated with an app password (config
+    SMTP_APP_PASSWORD/SERVER_EMAIL_ADDRESS/CONTACT_EMAIL_ADDRESS.
+    On success, marks the message email_sent=True.
 
-    Then update message db entry with email_sent=True.
+    Message is stored, failed send is logged and email_sent is not updated to True.
 
     :param app: Flask
     :param message_id: int
@@ -30,19 +35,50 @@ def send_contact_email(app: Flask,
     :return: None
     """
     DATABASE = app.config['DATABASE']
+    from_address = app.config['SERVER_EMAIL_ADDRESS']
     to_address = app.config['CONTACT_EMAIL_ADDRESS']
     email_subject, email_body = compose_notification_email(contact_email,
                                                            contact_name,
                                                            message_body)
 
-    try:
-        assert ezgmail.EMAIL_ADDRESS == app.config['SERVER_EMAIL_ADDRESS']
+    message = EmailMessage()
+    message['From'] = from_address
+    message['To'] = to_address
+    message['Subject'] = email_subject
+    message['Reply-To'] = contact_email
+    message.set_content(email_body)
 
-        ezgmail.send(recipient=to_address, subject=email_subject, body=email_body)
+    try:
+        with smtplib.SMTP(SMTP_HOST, SMTP_PORT, timeout=SMTP_TIMEOUT) as smtp:
+            smtp.starttls()
+            smtp.login(from_address, app.config['SMTP_APP_PASSWORD'])
+            smtp.send_message(message)
         DATABASE.email_sent(message_id)
-    except Exception as e:
-        print(e)
+        logger.info(f"Contact email sent for message {message_id}")
+    except Exception:
+        logger.exception(f"Contact email send failed for message {message_id}")
         # notify of error (eg with login), using sms
+
+
+def send_contact_email_async(app: Flask,
+                             message_id: int,
+                             contact_email: str, contact_name: str, message_body: str) -> None:
+    """
+    Dispatch send_contact_email on a background thread so the request doesn't
+    block on the SMTP round-trip. Pass the real app object (not the current_app
+    proxy, which is unbound outside the request thread).
+
+    :param app: Flask
+    :param message_id: int
+    :param contact_email: str
+    :param contact_name: str
+    :param message_body: str
+    :return: None
+    """
+    Thread(target=send_contact_email,
+           args=(app, message_id, contact_email, contact_name, message_body),
+           daemon=True,
+           ).start()
 
 
 def compose_notification_email(contact_email: str, contact_name: str, message_body: str

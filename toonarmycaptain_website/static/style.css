@@ -1,5 +1,10 @@
 body {
     padding: 1%;
+    margin: 0;
+    box-sizing: border-box;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
 }
 
 .line_breaking_title {
@@ -10,55 +15,6 @@ body {
     margin-left: 10%;
     margin-right: 10%;
 }
-
-/* #Navbar */
-
-.top_navbar {
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
-    font-family: sans-serif;
-    overflow: hidden;
-    position: -webkit-sticky; /* Safari */
-    position: sticky;
-    top: 0;
-    z-index: 289;
-
-}
-
-.navbar_item {
-    background: white;
-    display: inline;
-    float: right;
-}
-
-.navbar_link {
-    display: block;
-    color: black;
-    padding: 8px;
-    text-align: center;
-    text-decoration: none;
-    float: right;
-}
-
-.navbar_item .navbar_link:hover {
-    color: white;
-    background-color: black;
-}
-
-.nav_active_page {
-    text-decoration: underline;
-}
-
-.navbar_avatar {
-    height: 2em;
-    position: relative;
-    right: -.55em;
-    overflow: hidden;
-    border-radius: 50%;
-    alignment: right;
-}
-
 
 /* #Home */
 
@@ -84,6 +40,9 @@ body {
 /* #Projects */
 .social_icon_text_height {
     height: 1.6ex;
+    /* Reserves the icon's width before it loads, so text doesn't shift when it arrives. */
+    aspect-ratio: 1;
+    margin-right: 0.3em;
 }
 
 /* #Form */
@@ -99,6 +58,11 @@ body {
     display: block;
     margin-top: 1em;
     clear: both;
+}
+
+/* Turnstile widget: space from the message field nearer the submit button. */
+.cf-turnstile {
+    margin-top: 3em;
 }
 
 input[type=text], input[type="email"], textarea {
@@ -151,7 +115,8 @@ input[type=text], input[type="email"], textarea {
 }
 
 .contact_social_logo {
-    height: 3em
+    max-height: 3em;
+    max-width: 100%;
 }
 
 
@@ -162,32 +127,9 @@ input[type=text], input[type="email"], textarea {
 }
 
 
-.footer {
-    position: fixed;
-    bottom: 0;
-    margin: 0 auto;
-    padding-top: 2em;
-    width: 100%;
-    text-align: center;
-}
-
-
-.footer_socials_link_list {
-    list-style-type: none;
-    margin: 0;
-    margin-right: 70px;
-    justify-content: center; 
-}
-
-.footer_social_item {
-    padding: 10px;
-    display: inline;
-}
-
-.footer_social_icon {
-    height: 3em;
-}
-
-.image_enlarge_on_hover:hover {
-    transform: scale(1.1);
+/* #Mobile */
+@media (max-width: 600px) {
+    .contact_social_logo {
+        max-height: 2.25em;
+    }
 }
