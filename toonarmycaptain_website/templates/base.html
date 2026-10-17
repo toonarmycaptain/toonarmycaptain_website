@@ -29,6 +29,9 @@
           href="{{ url_for('static', filename='resume_icon_bw.svg') }}"
           as="image">
     <link rel="preload"
+          href="{{ url_for('static', filename='rss_icon_bw.svg') }}"
+          as="image">
+    <link rel="preload"
           href="{{ url_for('static', filename='dev_to.svg') }}"
           as="image">
 
@@ -49,7 +52,10 @@
     <link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}">
     <meta name="msapplication-TileColor" content="#ffffff">
     <meta name="msapplication-TileImage" content="/static/ms-icon-144x144.png">
-    <meta name="theme-color" content="#ffffff">
+    {# Lets the browser use its own dark defaults in dark mode. A meta tag rather than CSS so the first paint is already dark. #}
+    <meta name="color-scheme" content="light dark">
+    {# Light only: in dark mode the browser keeps its own dark toolbar instead of a white one. #}
+    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
 
     <meta name="viewport" content="width=device-width, initial-scale=1">
     {% block head %}
@@ -98,31 +104,38 @@
     <ul class="footer_socials_link_list">
         <li class="footer_social_item">
             <a href="https://x.com/toonarmycaptain">
-                <img class="footer_social_icon image_enlarge_on_hover"
+                <img class="footer_social_icon image_enlarge_on_hover image_invert_in_dark"
                      src="{{ url_for('static', filename='x_icon_bw.svg') }}"
                      title="X - @toonarmycaptain" alt="X - @toonarmycaptain"></a>
         </li>
         <li class="footer_social_item">
             <a href="https://github.com/toonarmycaptain/">
-                <img class="footer_social_icon image_enlarge_on_hover"
+                <img class="footer_social_icon image_enlarge_on_hover image_invert_in_dark"
                      src="{{ url_for('static', filename='github_icon_bw.svg') }}"
                      title="GitHub - toonarmycaptain" alt="GitHub - toonarmycaptain"></a>
         </li>
         <li class="footer_social_item">
             <a href="https://www.linkedin.com/in/davidantonini/">
-                <img class="footer_social_icon image_enlarge_on_hover"
+                <img class="footer_social_icon image_enlarge_on_hover image_invert_in_dark"
                      src="{{ url_for('static', filename='ln_icon_bw.svg') }}"
                      title="David Antonini - LinkedIn" alt="David Antonini - LinkedIn"></a>
         </li>
         <li class="footer_social_item">
             <a href="{{ url_for('my_site.resume') }}" rel="nofollow" target="_blank">
-                <img class="footer_social_icon image_enlarge_on_hover"
+                <img class="footer_social_icon image_enlarge_on_hover image_invert_in_dark"
                      src="{{ url_for('static', filename='resume_icon_bw.svg') }}"
                      title="David Antonini - Résumé" alt="David Antonini - Résumé"></a>
         </li>
+        <li class="footer_social_item">
+            {# Not blog_url: the blog renders this footer with the test config, where that isn't the blog. #}
+            <a href="https://blog.toonarmycaptain.com/feed_rss_created.xml" type="application/rss+xml">
+                <img class="footer_social_icon image_enlarge_on_hover image_invert_in_dark"
+                     src="{{ url_for('static', filename='rss_icon_bw.svg') }}"
+                     title="Blog RSS feed" alt="Blog RSS feed"></a>
+        </li>
 {#        <li class="footer_social_item">
             <a href=blog_url>
-                <img class="footer_social_icon image_enlarge_on_hover"
+                <img class="footer_social_icon image_enlarge_on_hover image_invert_in_dark"
                      src="{{ url_for('static', filename='dev_to.svg') }}"
                      title="dev.to - toonarmycaptain" alt="dev.to - toonarmycaptain"></a>
         </li> #}

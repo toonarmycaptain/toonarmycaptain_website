@@ -133,3 +133,25 @@ input[type=text], input[type="email"], textarea {
         max-height: 2.25em;
     }
 }
+
+
+/* #Dark mode */
+@media (prefers-color-scheme: dark) {
+    /* Browsers' default dark backgrounds differ (Firefox's is tinted purple), so set a neutral one.
+       header_footer.css uses the variable to match the navbar to it. */
+    :root {
+        --page_background: #121212;
+        background: var(--page_background);
+    }
+
+    /* For black-on-transparent logos. brightness(0) makes every pixel black first, so the invert
+       gives pure white rather than an off-white. */
+    .image_white_in_dark {
+        filter: brightness(0) invert(1);
+    }
+
+    /* For black-tile icons: a white tile matches the text colour, as the black tile does in light mode. */
+    .image_invert_in_dark {
+        filter: invert(1);
+    }
+}

@@ -7,7 +7,11 @@
     <link rel="preload"
           href="{{ url_for('static', filename='github_logo.png') }}" as="image">
     <link rel="preload"
-          href="{{ url_for('static', filename='ln_logo_128px.png') }}" as="image">
+          href="{{ url_for('static', filename='ln_logo_128px.png') }}" as="image"
+          media="(prefers-color-scheme: light)">
+    <link rel="preload"
+          href="{{ url_for('static', filename='ln_logo_128px_dark.png') }}" as="image"
+          media="(prefers-color-scheme: dark)">
     <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 {% endblock %}
 {% block body %}
@@ -56,19 +60,22 @@
     <p class="center_text_block">Or find me on:</p>
     <ul class="contact_socials_link_list center_text_block">
         <li class="contact_social_item">
-            <a href="https://x.com/toonarmycaptain" target="_blank" rel="noreferrer">
-                <img class="contact_social_logo" src="{{ url_for('static', filename='x_logo_bw.svg') }}"
-                     title="X - @toonarmycaptain" alt="X - @toonarmycaptain"></a>
+            <a href="https://www.linkedin.com/in/davidantonini/" target="_blank" rel="noreferrer">
+                <picture>
+                    <source srcset="{{ url_for('static', filename='ln_logo_128px_dark.png') }}"
+                            media="(prefers-color-scheme: dark)">
+                    <img class="contact_social_logo" src="{{ url_for('static', filename='ln_logo_128px.png') }}"
+                         title="David Antonini - LinkedIn" alt="David Antonini - LinkedIn"></picture></a>
         </li>
         <li class="contact_social_item">
             <a href="https://github.com/toonarmycaptain/" target="_blank" rel="noreferrer">
-                <img class="contact_social_logo" src="{{ url_for('static', filename='github_logo.png') }}"
+                <img class="contact_social_logo image_white_in_dark" src="{{ url_for('static', filename='github_logo.png') }}"
                      title="GitHub - toonarmycaptain" alt="GitHub - toonarmycaptain"></a>
         </li>
         <li class="contact_social_item">
-            <a href="https://www.linkedin.com/in/davidantonini/" target="_blank" rel="noreferrer">
-                <img class="contact_social_logo" src="{{ url_for('static', filename='ln_logo_128px.png') }}"
-                     title="David Antonini - LinkedIn" alt="David Antonini - LinkedIn"></a>
+            <a href="https://x.com/toonarmycaptain" target="_blank" rel="noreferrer">
+                <img class="contact_social_logo image_white_in_dark" src="{{ url_for('static', filename='x_logo_bw.svg') }}"
+                     title="X - @toonarmycaptain" alt="X - @toonarmycaptain"></a>
         </li>
     </ul>
 
