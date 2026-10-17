@@ -29,6 +29,9 @@
           href="{{ url_for('static', filename='resume_icon_bw.svg') }}"
           as="image">
     <link rel="preload"
+          href="{{ url_for('static', filename='rss_icon_bw.svg') }}"
+          as="image">
+    <link rel="preload"
           href="{{ url_for('static', filename='dev_to.svg') }}"
           as="image">
 
@@ -122,6 +125,13 @@
                 <img class="footer_social_icon image_enlarge_on_hover image_invert_in_dark"
                      src="{{ url_for('static', filename='resume_icon_bw.svg') }}"
                      title="David Antonini - Résumé" alt="David Antonini - Résumé"></a>
+        </li>
+        <li class="footer_social_item">
+            {# Not blog_url: the blog renders this footer with the test config, where that isn't the blog. #}
+            <a href="https://blog.toonarmycaptain.com/feed_rss_created.xml" type="application/rss+xml">
+                <img class="footer_social_icon image_enlarge_on_hover image_invert_in_dark"
+                     src="{{ url_for('static', filename='rss_icon_bw.svg') }}"
+                     title="Blog RSS feed" alt="Blog RSS feed"></a>
         </li>
 {#        <li class="footer_social_item">
             <a href=blog_url>
