@@ -55,26 +55,35 @@
 /* #Footer */
 
 .footer {
+    z-index: 3;
     margin-top: auto;
     padding-top: 2em;
     width: 100%;
     text-align: center;
+    position: sticky;
+    bottom: 0;
+    pointer-events: none; /* makes it so selection text can happen behind the footer icons */
 }
-
 
 .footer_socials_link_list {
     list-style-type: none;
     margin: 0;
     padding: 0;
+    display: inline-block;
+    background: var(--page_background, Canvas);
+    /* The icons' corner radius (15% of 3em, about 7px) plus the 10px padding, so the curves are parallel. */
+    border-radius: 17px;
+    pointer-events: auto;  /* makes the icons clickable (overrides pointer-events: none; in .footer */
 }
 
 .footer_social_item {
     padding: 10px;
-    display: inline;
+    display: inline-block; /* inline-block makes padding apply all sides. */
 }
 
 .footer_social_icon {
     height: 3em;
+    vertical-align: middle;
 }
 
 .image_enlarge_on_hover:hover {
@@ -90,5 +99,10 @@
 
     .footer_social_item {
         padding: 6px;
+    }
+
+    /* About 5px for the 2em icons, plus the 6px padding. */
+    .footer_socials_link_list {
+        border-radius: 11px;
     }
 }
