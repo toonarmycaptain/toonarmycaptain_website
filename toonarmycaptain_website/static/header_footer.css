@@ -1,0 +1,91 @@
+/* Separate from style.css so the blog can use the header and footer without the page styles. */
+
+/* #Navbar */
+
+.top_navbar {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    font-family: sans-serif;
+    overflow: hidden;
+    position: -webkit-sticky; /* Safari */
+    position: sticky;
+    top: 0;
+    z-index: 289;
+
+}
+
+.navbar_item {
+    background: white;
+    display: inline;
+    float: right;
+}
+
+.navbar_link {
+    display: block;
+    color: black;
+    padding: 8px;
+    text-align: center;
+    text-decoration: none;
+    float: right;
+}
+
+.navbar_item .navbar_link:hover {
+    color: white;
+    background-color: black;
+}
+
+.nav_active_page {
+    text-decoration: underline;
+}
+
+.navbar_avatar {
+    height: 2em;
+    position: relative;
+    right: -.55em;
+    overflow: hidden;
+    border-radius: 50%;
+    alignment: right;
+}
+
+
+/* #Footer */
+
+.footer {
+    margin-top: auto;
+    padding-top: 2em;
+    width: 100%;
+    text-align: center;
+}
+
+
+.footer_socials_link_list {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+.footer_social_item {
+    padding: 10px;
+    display: inline;
+}
+
+.footer_social_icon {
+    height: 3em;
+}
+
+.image_enlarge_on_hover:hover {
+    transform: scale(1.1);
+}
+
+
+/* #Mobile */
+@media (max-width: 600px) {
+    .footer_social_icon {
+        height: 2em;
+    }
+
+    .footer_social_item {
+        padding: 6px;
+    }
+}

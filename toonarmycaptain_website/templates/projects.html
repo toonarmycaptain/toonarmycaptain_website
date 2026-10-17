@@ -7,52 +7,28 @@
 {% block body %}
     <div class="center_text_block">
         <h1 class="line_breaking_title">Projects</h1>
-        <p>
-            Some projects I am working on/maintain:
-            <br>
-        </p>
+
         <p><a href="https://github.com/toonarmycaptain/toonarmycaptain_website/"
               title="toonarmycaptain_website - GitHub">
             <img class="social_icon_text_height" src="{{ url_for('static', filename='github_icon_bw.svg') }}"
                  target="_blank" rel="noreferrer"
                  alt="toonarmycaptain_website - GitHub">This website</a>
-            <br>
-            This website, originally deployed on pythonanywhere, incorporating contact form and db
-            One of my first projects learning flask testing, db in a webapp, automated email, responsive HTML/CSS.
+            <br>One of my first projects learning Flask, Flask-WTF forms, testing, db in a webapp, automated email, responsive HTML/CSS.
         </p>
         <p>
-            <a href="https://github.com/toonarmycaptain/dionysus"
-               title="dionysus - GitHub">
+            <a href="https://github.com/toonarmycaptain/padeploy"
+               title="padeploy - GitHub" target="_blank" rel="noreferrer">
                 <img class="social_icon_text_height" src="{{ url_for('static', filename='github_icon_bw.svg') }}"
-                     target="_blank" rel="noreferrer"
-                     alt="dionysus - GitHub">dionysus</a> - Student avatar score chart generator
+                     alt="padeploy - GitHub">padeploy</a> - deploy and manage PythonAnywhere web apps
             <br>
-            App for teachers to chart test scores using ‘secret’ avatars rather than student names, for privacy
-            purposes.
-            <br>
-            Learned to set up and integrate CI pipelines, coverage, code quality tools, implement effective versioning,
-            JSON, argparse, OOP, basic Tkinter GUI elements, converted from unittest to pytest.
-            <br>
-            Originally implemented in fully functional paradigm, then incremental conversion to OOP, using an abstracted
-            database to support varied db backend implementations (eg JSON files, SQLite).
-        </p>
-        <p>
-            <a href="https://github.com/toonarmycaptain/xkcd_archiver"
-               title="xkcd_archiver - GitHub">
-                <img class="social_icon_text_height" src="{{ url_for('static', filename='github_icon_bw.svg') }}"
-                     target="_blank" rel="noreferrer"
-                     alt="xkcd_archiver - GitHub">xkcd_archiver</a> - Download and maintain an archive of xkcd comics
-            <br>
-            Twist on typical web scraping starter project to quickly archive all of the images from the XKCD web comic,
-            using the site’s JSON API and threading to download images directly rather than scraping HTML.
-            <br>
-            Learned to use requests, Flask-WTF forms, parse JSON, effectively employ threading. Iterated on over the
-            years to improve threading, save with image metadata, add a TUI.
+            A package I spun out of bespoke scripts I'd made for a few other projects into a reusable tool, published on <a href="https://pypi.org/project/padeploy/">PyPI</a>.
+            <br>Allows selectively uploading project files (eg changed, untracked) to PythonAnywhere, reloading the web app, and other management tasks, without manually logging in to the platform, which enables incorporation into CI/CD pipelines.
         </p>
         <p>
             <a href="https://ixlsearch.toonarmycaptain.com"
                title="ixl search - improved search for ixl resources">
-                ixl search</a> - improvement over <a href="https://www.ixl.com">IXL</a>'s built-in search
+                <img class="social_icon_text_height" src="https://ixlsearch.toonarmycaptain.com/static/favicon.svg"
+                     alt="ixl search">ixl search</a> - improvement over IXL's built-in search
             <br>
             My wife was having trouble finding resources via <a href="https://www.ixl.com">IXL</a>'s search, so I built
             a (hopefully!) better search tool.
@@ -72,7 +48,36 @@
             <br>
             Created a simple DSL to put in Google calendar descriptions, and a daemon that polls the calendar and utilises <a href="https://www.pushbullet.com/">Pushbullet</a> to send text messages.
            <br>
-            Extended using similar APIs to send me a text when I receive an email matching specific criteria, run with systemd.
+            Extended using similar APIs to send me a text when I receive an email matching specific criteria, run the daemon with systemd.
+        </p>
+        <p>
+            <a href="https://github.com/toonarmycaptain/xkcd_archiver"
+               title="xkcd_archiver - GitHub">
+                <img class="social_icon_text_height" src="{{ url_for('static', filename='github_icon_bw.svg') }}"
+                     target="_blank" rel="noreferrer"
+                     alt="xkcd_archiver - GitHub">xkcd_archiver</a> - download and maintain an archive of xkcd comics
+            <br>
+            Twist on typical web scraping starter project to quickly archive all of the images from the <a href="https://xkcd.com/">xkcd</a> web comic,
+            using the site’s JSON API and threading to download images directly rather than scraping HTML.
+            <br>
+            Learned to use requests, parse JSON, effectively employ threading. Iterated on over the
+            years to improve threading, save with image metadata, add a <a href="https://textual.textualize.io/">Textual</a> TUI.
+        </p>
+        <p>
+            <a href="https://github.com/toonarmycaptain/dionysus"
+               title="dionysus - GitHub">
+                <img class="social_icon_text_height" src="{{ url_for('static', filename='github_icon_bw.svg') }}"
+                     target="_blank" rel="noreferrer"
+                     alt="dionysus - GitHub">dionysus</a> - student avatar score chart generator
+            <br>
+            App for teachers to chart test scores using ‘secret’ avatars rather than student names, for privacy
+            purposes.
+            <br>
+            Learned to set up and integrate CI pipelines, coverage, code quality tools, implement effective versioning,
+            JSON, argparse, OOP, basic Tkinter GUI elements, converted from unittest to pytest. {# pytest is the correct captialisation #}
+            <br>
+            Originally implemented in fully functional paradigm, then incremental conversion to OOP, using an abstracted
+            database to support varied db backend implementations (eg JSON files, SQLite).
         </p>
     </div>
 {% endblock %}

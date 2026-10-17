@@ -1,4 +1,5 @@
 """ Tests for database.py """
+from datetime import datetime, timezone
 from pathlib import Path
 from random import randint
 
@@ -136,23 +137,29 @@ def test_store_person(empty_sqlite_database,
     assert test_db.store_person(*new_contact) == returned_id
 
     assert test_db._connection().cursor().execute(
-        """SELECT * 
+        """SELECT id, name, email, alternate_names
            FROM person
            WHERE id=?""", (returned_id,)).fetchone() == (returned_id, *resulting_person_row)
 
 
-def test_store_message_text(empty_sqlite_database):
+@pytest.mark.parametrize(
+    'captcha_passed',
+    [False,  # Flagged as spam.
+     True,  # Verified human.
+     ])
+def test_store_message_text(empty_sqlite_database, captcha_passed):
     test_db = empty_sqlite_database
     test_contact_id = test_db.store_person('test subject', 'test@subject.com')
     test_message = 'some arbitrary message'
-    message_id = test_db.store_message_text(test_contact_id, test_message)
+    message_id = test_db.store_message_text(test_contact_id, test_message,
+                                            captcha_passed=captcha_passed)
 
     assert test_db._connection().cursor().execute(
-        """SELECT * 
+        """SELECT id, person_id, contents, email_sent, sms_sent, captcha_passed
            FROM message
            WHERE id=?
            """, (message_id,)).fetchone() == (message_id, test_contact_id, test_message,
-                                              False, False)  # Email, SMS not sent.
+                                              False, False, captcha_passed)  # Email, SMS not sent.
 
 
 def test_store_contact(empty_sqlite_database):
@@ -193,27 +200,30 @@ def test_store_contact_integration_unmocked(empty_sqlite_database):
 
     test_name = 'name'
     test_email = 'name@email.com'
-    test_contact_id = test_db.store_person(test_name, test_email)
     test_message_text = 'some message'
 
+    now = datetime.now(timezone.utc).replace(microsecond=0).isoformat()
+    test_contact_id = test_db.store_person(test_name, test_email)
     test_message_id = test_db.store_contact(test_name,
                                             test_email,
                                             test_message_text)
     # Stored contact
     assert test_db._connection().cursor().execute(
-        """SELECT * 
+        """SELECT id, name, email, alternate_names, created_at
            FROM person
            WHERE id=?""", (test_contact_id,)).fetchone() == (test_contact_id,
                                                              test_name,
                                                              test_email,
-                                                             None)  # No alt names.
+                                                             None,  # No alt names.
+                                                             now)  # Stamped at insert.
     # Stored message
     assert test_db._connection().cursor().execute(
-        """SELECT * 
+        """SELECT id, person_id, contents, email_sent, sms_sent, captcha_passed, received_at
            FROM message
            WHERE id=?
            """, (test_message_id,)).fetchone() == (test_message_id, test_contact_id, test_message_text,
-                                                   False, False)  # Email, SMS not sent.
+                                                   False, False, False,  # Email, SMS not sent, captcha not passed.
+                                                   now)  # Stamped at insert.
 
 
 def test_email_sent(empty_sqlite_database):
@@ -224,13 +234,13 @@ def test_email_sent(empty_sqlite_database):
 
     # No existing field data:
     assert test_db._connection().cursor().execute(
-        """SELECT * 
+        """SELECT id, person_id, contents, email_sent, sms_sent, captcha_passed
            FROM message
            WHERE id=?
            """, (test_message_id,)).fetchone() == (test_message_id,
                                                    test_person_id,
                                                    test_message_text,
-                                                   0, 0)  # Email, SMS not sent.
+                                                   0, 0, 0)  # Email, SMS not sent, captcha not passed.
 
     # Add email sent:
     test_db.email_sent(test_message_id)
@@ -250,13 +260,13 @@ def test_sms_sent(empty_sqlite_database):
 
     # No existing field data:
     assert test_db._connection().cursor().execute(
-        """SELECT * 
+        """SELECT id, person_id, contents, email_sent, sms_sent, captcha_passed
            FROM message
            WHERE id=?
            """, (test_message_id,)).fetchone() == (test_message_id,
                                                    test_person_id,
                                                    test_message_text,
-                                                   0, 0)  # Email, SMS not sent.
+                                                   0, 0, 0)  # Email, SMS not sent, captcha not passed.
 
     # Add sms sent:
     test_db.sms_sent(test_message_id)
