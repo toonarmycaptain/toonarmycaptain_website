@@ -71,7 +71,7 @@
                                          ('my_site.home', 'Home'),
                                          ] %}
             <li class="navbar_item">
-                <a class="navbar_link {% if nav_url in request.path %} nav_active_page {% endif %}"
+                <a class="navbar_link {% if nav_url == request.endpoint %} nav_active_page {% endif %}"
                    {% if 'my_site.' in nav_url %}
                        href="{{ url_for(nav_url) }}"
                    {% else %}
