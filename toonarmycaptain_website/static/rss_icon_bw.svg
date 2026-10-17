@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Same layout as x_icon_bw.svg and resume_icon_bw.svg: a 300px glyph on a
+     black square. The glyph is a dot and two quarter rings, centred on its bottom-left corner. -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" aria-label="RSS" role="img">
+  <rect width="512" height="512" rx="15%" fill="#000000"/>
+  <g transform="translate(106 406) scale(1.7143)" fill="#ffffff">
+    <circle cx="24" cy="-24" r="24"/>
+    <path d="M0 -116A116 116 0 0 1 116 0H82A82 82 0 0 0 0 -82Z"/>
+    <path d="M0 -175A175 175 0 0 1 175 0H140A140 140 0 0 0 0 -140Z"/>
+  </g>
+</svg>
