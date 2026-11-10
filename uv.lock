@@ -363,14 +363,15 @@ wheels = [
 
 [[package]]
 name = "padeploy"
-version = "0.3.0"
+version = "0.5.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "click" },
     { name = "requests" },
 ]
+sdist = { url = "https://files.pythonhosted.org/packages/79/32/4d1e2d87aeccb115c3576e34e7715b63e300a83d7c8797f6e10d10cb8292/padeploy-0.5.1.tar.gz", hash = "sha256:9533c3b0aae510d9b2c58d2cbd82fe5c9b07546f3e6e6915598aacfd4bcfae80", size = 31094, upload-time = "2026-11-10T05:55:28.792Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/37/83/bdb1b802f1107fbc0d96d20d47c6fa2f594a64506944c847e4e4ea011c33/padeploy-0.3.0-py3-none-any.whl", hash = "sha256:27a67b7afd2e788fd60d7e39faba71f68c3accab927fd0db7b8f7e2792de452a", size = 21997, upload-time = "2026-10-16T20:14:23.305Z" },
+    { url = "https://files.pythonhosted.org/packages/ec/f1/356731bebb16e92c34f1e4c767264e22228d895632ef2eda9ab91d0d3198/padeploy-0.5.1-py3-none-any.whl", hash = "sha256:c18ca24750f4a2a7beaa6e48bf401eff79ccd3efd40059b977626368d420d3f3", size = 35143, upload-time = "2026-11-10T05:55:27.675Z" },
 ]
 
 [[package]]
@@ -504,7 +505,7 @@ requires-dist = [
 dev = [
     { name = "coverage", specifier = ">=7.0" },
     { name = "coveralls", specifier = ">=4.0" },
-    { name = "padeploy", specifier = ">=0.2.0" },
+    { name = "padeploy", specifier = ">=0.5.1" },
     { name = "pytest", specifier = ">=8.0" },
     { name = "pytest-cov", specifier = ">=5.0" },
     { name = "pytest-flask", specifier = ">=1.3" },
