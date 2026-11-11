@@ -1,4 +1,5 @@
 """Shared request/proxy helpers."""
+
 from flask import request
 
 
@@ -18,4 +19,8 @@ def client_ip() -> str | None:
 
     :return: str | None
     """
-    return request.headers.get('X-Real-IP') or request.headers.get('CF-Connecting-IP') or None
+    return (
+        request.headers.get("X-Real-IP")
+        or request.headers.get("CF-Connecting-IP")
+        or None
+    )
