@@ -11,6 +11,9 @@ SERVER_EMAIL_ADDRESS: str = "some email to send contact emails from"
 CONTACT_EMAIL_ADDRESS: str = "where to send contact emails to"
 SMTP_APP_PASSWORD: str = "gmail app password"
 
+MAILER_URL: str = "mailer url"
+MAILER_KEY: str = "mailer key"
+
 TURNSTILE_SITE_KEY: str = "turnstile-site-key"  # public - rendered in the page
 TURNSTILE_SECRET_KEY: str = "turnstile-secret-key"  # private - server-side verification
 

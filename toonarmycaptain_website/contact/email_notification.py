@@ -1,9 +1,12 @@
 """Send notification via email."""
 
+import json
 import logging
-import smtplib
-from email.message import EmailMessage
+
+# import smtplib
+# from email.message import EmailMessage
 from threading import Thread
+from urllib import request
 
 from flask import Flask
 
@@ -24,8 +27,7 @@ def send_contact_email(
     """
     Forward contact via email, from server address to contact address.
 
-    Sent via Gmail SMTP authenticated with an app password (config
-    SMTP_APP_PASSWORD/SERVER_EMAIL_ADDRESS/CONTACT_EMAIL_ADDRESS.
+    Sent via the mailer (config MAILER_URL/MAILER_KEY).
     On success, marks the message email_sent=True.
 
     Message is stored, failed send is logged and email_sent is not updated to True.
@@ -38,26 +40,52 @@ def send_contact_email(
     :return: None
     """
     DATABASE = app.config["DATABASE"]
-    from_address = app.config["SERVER_EMAIL_ADDRESS"]
-    to_address = app.config["CONTACT_EMAIL_ADDRESS"]
+    # from_address = app.config["SERVER_EMAIL_ADDRESS"]
+    # to_address = app.config["CONTACT_EMAIL_ADDRESS"]
     email_subject, email_body = compose_notification_email(
         contact_email, contact_name, message_body
     )
 
-    message = EmailMessage()
-    message["From"] = from_address
-    message["To"] = to_address
-    message["Subject"] = email_subject
-    message["Reply-To"] = contact_email
-    message.set_content(email_body)
-
+    # message = EmailMessage()
+    # message["From"] = from_address
+    # message["To"] = to_address
+    # message["Subject"] = email_subject
+    # message["Reply-To"] = contact_email
+    # message.set_content(email_body)
+    #
     try:
-        with smtplib.SMTP(SMTP_HOST, SMTP_PORT, timeout=SMTP_TIMEOUT) as smtp:
-            smtp.starttls()
-            smtp.login(from_address, app.config["SMTP_APP_PASSWORD"])
-            smtp.send_message(message)
+        # with smtplib.SMTP(SMTP_HOST, SMTP_PORT, timeout=SMTP_TIMEOUT) as smtp:
+        #     smtp.starttls()
+        #     smtp.login(from_address, app.config["SMTP_APP_PASSWORD"])
+        #     smtp.send_message(message)
+        # DATABASE.email_sent(message_id)
+        # logger.info(f"Contact email sent for message {message_id}")
+        with request.urlopen(
+            request.Request(
+                app.config["MAILER_URL"],
+                data=json.dumps(
+                    {
+                        "site": "toonarmycaptain.com",
+                        "subject": email_subject,
+                        "text": email_body,
+                        "reply_to": contact_email,
+                    }
+                ).encode(),
+                method="POST",
+                headers={
+                    "Authorization": f"Bearer {app.config['MAILER_KEY']}",
+                    "Content-Type": "application/json",
+                    # the default Python-urllib agent can be blocked
+                    "User-Agent": "toonarmycaptain-website contact form",
+                },
+            ),
+            timeout=10,  # seconds
+        ) as response:
+            mailer_id = json.load(response)["messageId"]
         DATABASE.email_sent(message_id)
-        logger.info(f"Contact email sent for message {message_id}")
+        logger.info(
+            f"Contact email sent for message {message_id} (mailer id {mailer_id})"
+        )
     except Exception:
         logger.exception(f"Contact email send failed for message {message_id}")
         # notify of error (eg with login), using sms

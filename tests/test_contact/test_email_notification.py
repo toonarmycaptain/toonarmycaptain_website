@@ -1,6 +1,8 @@
 """Test email_notification.py"""
 
-import smtplib
+import json
+from io import BytesIO
+from urllib.error import HTTPError, URLError
 
 import pytest
 from flask import Flask
@@ -12,13 +14,28 @@ from toonarmycaptain_website.contact.email_notification import (
 )
 
 
-@pytest.mark.parametrize("exception_thrown", [False, True])
-def test_send_contact_email(monkeypatch, test_client, exception_thrown):
-    """Email is sent via Gmail SMTP with correct metadata and logged in db."""
+@pytest.mark.parametrize(
+    ("mailer_reply", "email_sent"),
+    [
+        (b'{"messageId": "m-123"}', True),
+        # mailer refuses the request, eg wrong key
+        (
+            HTTPError("https://mailer.example/send", 401, "Unauthorized", None, None),
+            False,
+        ),
+        (URLError("timed out"), False),
+        # a reply without a message id isn't taken as sent
+        (b'{"error": "some error"}', False),
+    ],
+)
+def test_send_contact_email(monkeypatch, test_client, mailer_reply, email_sent):
+    """
+    Email is POSTed to the mailer with correct metadata, and logged in db only
+    if the mailer replies with a message id.
+    """
 
-    mock_from_address = "mock@from.address"
-    mock_to_address = "mock@to.address"
-    mock_app_password = "mock app password"
+    mock_mailer_url = "https://mailer.example/send"
+    mock_mailer_key = "mock mailer key"
 
     test_message_id = 314
     test_contact_email = "contact@host.tld"
@@ -26,16 +43,7 @@ def test_send_contact_email(monkeypatch, test_client, exception_thrown):
     test_message_body = "Some amusing message."
     mock_email_subject = "Contact from Sir Lancelot"
 
-    mock_call = {
-        "mock_compose_notification_email": False,
-        "smtp.starttls": False,
-        "smtp.login": False,
-        "smtp.send_message": False,
-        "app.DATABASE.email_sent": False,
-    }
-
     def mock_compose_notification_email(contact_email, contact_name, message_body):
-        mock_call["mock_compose_notification_email"] = True
         assert (contact_email, contact_name, message_body) == (
             test_contact_email,
             test_contact_name,
@@ -43,59 +51,29 @@ def test_send_contact_email(monkeypatch, test_client, exception_thrown):
         )
         return mock_email_subject, test_message_body
 
-    class MockSMTP:
-        def __init__(self, host, port, timeout):
-            assert (host, port, timeout) == (
-                email_notification.SMTP_HOST,
-                email_notification.SMTP_PORT,
-                email_notification.SMTP_TIMEOUT,
-            )
+    # Recorded rather than asserted in the mocks: send_contact_email swallows exceptions.
+    mailer_requests = []
+    emailed_message_ids = []
 
-        def __enter__(self):
-            return self
-
-        def __exit__(self, *exc):
-            return False
-
-        def starttls(self):
-            mock_call["smtp.starttls"] = True
-
-        def login(self, user, password):
-            mock_call["smtp.login"] = True
-            assert (user, password) == (mock_from_address, mock_app_password)
-
-        def send_message(self, message):
-            mock_call["smtp.send_message"] = True
-            if exception_thrown:
-                raise smtplib.SMTPException
-            # Don't test body, as is subject to change.
-            assert (
-                message["From"],
-                message["To"],
-                message["Subject"],
-                message["Reply-To"],
-            ) == (
-                mock_from_address,
-                mock_to_address,
-                mock_email_subject,
-                test_contact_email,
-            )
+    def mock_urlopen(mailer_request, timeout):
+        mailer_requests.append(mailer_request)
+        if isinstance(mailer_reply, Exception):
+            raise mailer_reply
+        return BytesIO(mailer_reply)
 
     class MockDatabase:
         def email_sent(self, message_id):
-            mock_call["app.DATABASE.email_sent"] = True
-            assert message_id == test_message_id
+            emailed_message_ids.append(message_id)
 
     class MockApp(Flask):
         def __init__(self):
             self.config = {
-                "SERVER_EMAIL_ADDRESS": mock_from_address,
-                "CONTACT_EMAIL_ADDRESS": mock_to_address,
-                "SMTP_APP_PASSWORD": mock_app_password,
+                "MAILER_URL": mock_mailer_url,
+                "MAILER_KEY": mock_mailer_key,
                 "DATABASE": MockDatabase(),
             }
 
-    monkeypatch.setattr(email_notification.smtplib, "SMTP", MockSMTP)
+    monkeypatch.setattr(email_notification.request, "urlopen", mock_urlopen)
     monkeypatch.setattr(
         email_notification,
         "compose_notification_email",
@@ -113,11 +91,27 @@ def test_send_contact_email(monkeypatch, test_client, exception_thrown):
         is None
     )
 
-    if exception_thrown:
-        assert mock_call["smtp.send_message"] is True
-        assert mock_call["app.DATABASE.email_sent"] is False
-    else:
-        assert all(mock_call.values())
+    assert [
+        (each.full_url, each.get_method(), each.headers, json.loads(each.data))
+        for each in mailer_requests
+    ] == [
+        (
+            mock_mailer_url,
+            "POST",
+            {
+                "Authorization": f"Bearer {mock_mailer_key}",
+                "Content-type": "application/json",
+                "User-agent": "toonarmycaptain-website contact form",
+            },
+            {
+                "site": "toonarmycaptain.com",
+                "subject": mock_email_subject,
+                "text": test_message_body,
+                "reply_to": test_contact_email,
+            },
+        )
+    ]
+    assert emailed_message_ids == ([test_message_id] if email_sent else [])
 
 
 def test_compose_notification_email():
