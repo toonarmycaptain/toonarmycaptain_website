@@ -1,20 +1,24 @@
 """Default application settings, to be overridden at runtime."""
+
 from pathlib import Path
 
-SECRET_KEY: bytes = b'some secret key'
+SECRET_KEY: bytes = b"some secret key"
 
-CONTACT_DATABASE_PATH = Path('some_instance.db')
+CONTACT_DATABASE_PATH = Path("some_instance.db")
 CONTACT_MESSAGE_MAX_LENGTH: int = 10000  # characters
 
-SERVER_EMAIL_ADDRESS: str = 'some email to send contact emails from'
-CONTACT_EMAIL_ADDRESS: str = 'where to send contact emails to'
-SMTP_APP_PASSWORD: str = 'gmail app password'
+SERVER_EMAIL_ADDRESS: str = "some email to send contact emails from"
+CONTACT_EMAIL_ADDRESS: str = "where to send contact emails to"
+SMTP_APP_PASSWORD: str = "gmail app password"
 
-TURNSTILE_SITE_KEY: str = 'turnstile-site-key'       # public - rendered in the page
-TURNSTILE_SECRET_KEY: str = 'turnstile-secret-key'   # private - server-side verification
+MAILER_URL: str = "mailer url"
+MAILER_KEY: str = "mailer key"
 
-CONTACT_CELL_NUMBER: str = 'some number'
+TURNSTILE_SITE_KEY: str = "turnstile-site-key"  # public - rendered in the page
+TURNSTILE_SECRET_KEY: str = "turnstile-secret-key"  # private - server-side verification
 
-BLOG_URL: str = 'https://some.blog.url'
+CONTACT_CELL_NUMBER: str = "some number"
 
-RESUME_DIR = Path('whereever/the/resumes/are')
+BLOG_URL: str = "https://some.blog.url"
+
+RESUME_DIR = Path("whereever/the/resumes/are")

@@ -1,10 +1,8 @@
-""" Contact form submission database. """
+"""Contact form submission database."""
 
 import sqlite3
-
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
-from typing import Optional
 
 
 class ContactDatabase:
@@ -27,17 +25,17 @@ class ContactDatabase:
 
     """
 
-    def __init__(self,
-                 database_path: Path,
-                 message_max_length: int,
-                 ):
+    def __init__(
+        self,
+        database_path: Path,
+        message_max_length: int,
+    ):
         """
         :param database_path: Path
         :param message_max_length: int
         """
 
-        self.database_path: Path = (database_path
-                                    or Path(Path.cwd(), 'contact.db'))
+        self.database_path: Path = database_path or Path(Path.cwd(), "contact.db")
         self._message_max_length: int = message_max_length
         # check if db file exists/db has appropriate tables etc
         self._init_db()
@@ -79,7 +77,8 @@ class ContactDatabase:
                                                     ),
                          created_at TEXT  -- ISO 8601 UTC, set on first insert in store_person; NULL for pre-existing rows.
                          );
-                         """)
+                         """
+            )
             conn.cursor().execute(
                 f"""CREATE TABLE IF NOT EXISTS message(
                          -- primary key must be INTEGER not INT, NOT NULL is implicit.
@@ -94,30 +93,37 @@ class ContactDatabase:
                          received_at TEXT,  -- ISO 8601 UTC, set by store_message_text; NULL for pre-existing rows.
                          FOREIGN KEY (person_id) REFERENCES person(id)
                          );
-                         """)
-
+                         """
+            )
 
             # Migrate older dbs: CREATE TABLE IF NOT EXISTS won't add a column to
             # a message table that predates captcha_passed, so add it in place.
-            existing_columns = [row[1] for row in
-                                conn.cursor().execute("PRAGMA table_info(message)").fetchall()]
-            if 'captcha_passed' not in existing_columns:
+            existing_columns = [
+                row[1]
+                for row in conn.cursor()
+                .execute("PRAGMA table_info(message)")
+                .fetchall()
+            ]
+            if "captcha_passed" not in existing_columns:
                 conn.cursor().execute(
-                    "ALTER TABLE message ADD COLUMN captcha_passed BOOLEAN NOT NULL DEFAULT 0")
+                    "ALTER TABLE message ADD COLUMN captcha_passed BOOLEAN NOT NULL DEFAULT 0"
+                )
             # Use TEXT bc SQLite doesn't have date/time types, nullable to account for existing missing data.
-            if 'received_at' not in existing_columns:
-                conn.cursor().execute(
-                    "ALTER TABLE message ADD COLUMN received_at TEXT")
-            person_columns = [row[1] for row in
-                              conn.cursor().execute("PRAGMA table_info(person)").fetchall()]
+            if "received_at" not in existing_columns:
+                conn.cursor().execute("ALTER TABLE message ADD COLUMN received_at TEXT")
+            person_columns = [
+                row[1]
+                for row in conn.cursor().execute("PRAGMA table_info(person)").fetchall()
+            ]
             # Use TEXT bc SQLite doesn't have date/time types, nullable to account for existing missing data.
-            if 'created_at' not in person_columns:
-                conn.cursor().execute(
-                    "ALTER TABLE person ADD COLUMN created_at TEXT")
+            if "created_at" not in person_columns:
+                conn.cursor().execute("ALTER TABLE person ADD COLUMN created_at TEXT")
         conn.commit()
         conn.close()
 
-    def get_person_from_email(self, db_connection: sqlite3.Connection, email: str) -> tuple:
+    def get_person_from_email(
+        self, db_connection: sqlite3.Connection, email: str
+    ) -> tuple:
         """
         Get person.id from email.
         Email column is lower-cased/case-insensitive.
@@ -126,12 +132,18 @@ class ContactDatabase:
         :param email: str
         :return: float
         """
-        return db_connection.cursor().execute(
-            """SELECT person.id, person.name, person.alternate_names
+        return (
+            db_connection.cursor()
+            .execute(
+                """SELECT person.id, person.name, person.alternate_names
                FROM person
                WHERE email=?
                LIMIT 1;
-               """, (email.lower(),)).fetchone()
+               """,
+                (email.lower(),),
+            )
+            .fetchone()
+        )
 
     def store_person(self, name: str, email: str) -> int:
         """
@@ -156,21 +168,32 @@ class ContactDatabase:
             if existing_record := self.get_person_from_email(conn, email):
                 person_id, person_name, alternate_names = existing_record
 
-                if name != person_name and (not alternate_names  # Avoid str comparison to None.
-                                            or name not in alternate_names):
-                    alternate_names = name if not alternate_names else f'{alternate_names}, ' + name
+                if name != person_name and (
+                    not alternate_names  # Avoid str comparison to None.
+                    or name not in alternate_names
+                ):
+                    alternate_names = (
+                        name if not alternate_names else f"{alternate_names}, " + name
+                    )
                     cursor.execute(
                         """UPDATE person
                            SET alternate_names=?
                            WHERE person.id=?;
-                           """, (alternate_names, person_id,))
+                           """,
+                        (
+                            alternate_names,
+                            person_id,
+                        ),
+                    )
 
             else:  # Create new record:
-                created_at = datetime.now(timezone.utc).replace(microsecond=0).isoformat()
+                created_at = datetime.now(UTC).replace(microsecond=0).isoformat()
                 cursor.execute(
                     """INSERT INTO person(name, email, created_at)
                        VALUES(?,?,?);
-                       """, (name, email, created_at))
+                       """,
+                    (name, email, created_at),
+                )
                 if cursor.lastrowid is None:
                     # should never happen in production.
                     raise RuntimeError("INSERT did not return a row ID")
@@ -178,8 +201,9 @@ class ContactDatabase:
         conn.commit()
         return person_id
 
-    def store_message_text(self, person_id: int, message_text: str,
-                           captcha_passed: bool = False) -> Optional[int]:
+    def store_message_text(
+        self, person_id: int, message_text: str, captcha_passed: bool = False
+    ) -> int | None:
         """
         Store message text in database, return id of message.
 
@@ -188,18 +212,20 @@ class ContactDatabase:
         :param captcha_passed: bool
         :return: int: message.id
         """
-        received_at = datetime.now(timezone.utc).replace(microsecond=0).isoformat()
+        received_at = datetime.now(UTC).replace(microsecond=0).isoformat()
         with self._connection() as conn:
             cursor = conn.cursor()
             cursor.execute(
                 """INSERT INTO message(person_id, contents, captcha_passed, received_at)
                    VALUES(?,?,?,?)
-                   """, (person_id, message_text, captcha_passed, received_at))
+                   """,
+                (person_id, message_text, captcha_passed, received_at),
+            )
             message_id = cursor.lastrowid
         conn.commit()
         return message_id
 
-    def store_contact(self, name: str, email: str, message: str) -> Optional[int]:
+    def store_contact(self, name: str, email: str, message: str) -> int | None:
         """
 
         :param name: str
@@ -223,7 +249,9 @@ class ContactDatabase:
                 """UPDATE message
                    SET email_sent=?
                    WHERE id=?;
-                   """, (True, message_id))
+                   """,
+                (True, message_id),
+            )
         conn.commit()
 
     def sms_sent(self, message_id: int) -> None:
@@ -238,5 +266,7 @@ class ContactDatabase:
                 """UPDATE message
                    SET sms_sent=?
                    WHERE id=?;
-                   """, (True, message_id))
+                   """,
+                (True, message_id),
+            )
         conn.commit()

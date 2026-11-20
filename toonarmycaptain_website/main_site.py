@@ -1,15 +1,19 @@
 """main_site.py"""
-from flask import (current_app as app,
-                   abort,
-                   Blueprint,
-                   flash,
-                   redirect,
-                   request,
-                   render_template,
-                   send_from_directory,
-                   session,
-                   url_for,
-                   )
+
+from flask import (
+    Blueprint,
+    abort,
+    flash,
+    redirect,
+    render_template,
+    request,
+    send_from_directory,
+    session,
+    url_for,
+)
+from flask import (
+    current_app as app,
+)
 from flask_wtf.csrf import CSRFError
 
 from toonarmycaptain_website.contact.email_notification import send_contact_email_async
@@ -20,47 +24,45 @@ from toonarmycaptain_website.utils import client_ip
 bp = Blueprint("my_site", __name__)
 
 
-@bp.route('/favicon.ico', methods=['GET'])
+@bp.route("/favicon.ico", methods=["GET"])
 def favicon():
     """
     Serve webpage icon.
     """
-    return redirect(url_for('static',
-                            filename='favicon.ico',
-                            mimetype='image/vnd.microsoft.icon'
-                            )
-                    )
+    return redirect(
+        url_for("static", filename="favicon.ico", mimetype="image/vnd.microsoft.icon")
+    )
 
 
-@bp.route('/', methods=['GET'])
+@bp.route("/", methods=["GET"])
 def base_url():
     """Redirect bare url to home page."""
-    return redirect(url_for('my_site.home'), code=301)
+    return redirect(url_for("my_site.home"), code=301)
 
 
-@bp.route('/home/', methods=['GET'])
+@bp.route("/home/", methods=["GET"])
 def home():
     """Home page."""
-    return render_template('home.html')
+    return render_template("home.html")
 
 
-@bp.route('/projects/', methods=['GET'])
+@bp.route("/projects/", methods=["GET"])
 def projects():
     """Projects page."""
-    return render_template('projects.html', methods=['GET'])
+    return render_template("projects.html", methods=["GET"])
 
 
-@bp.route('/blog/', methods=['GET'])
+@bp.route("/blog/", methods=["GET"])
 def blog():
     """
     Blog page.
 
     Links to dev.to blog. May in future embed blog/posts.
     """
-    return redirect(app.config['BLOG_URL'])
+    return redirect(app.config["BLOG_URL"])
 
 
-@bp.route('/contact/', methods=['GET', 'POST'])
+@bp.route("/contact/", methods=["GET", "POST"])
 def contact():
     """
     Contact form route.
@@ -68,54 +70,59 @@ def contact():
     Saves data to db, sends text message and email.
     Returns successful message on form validation, error on error.
     """
-    expired_form = session.pop('_expired_form', None)
+    expired_form = session.pop("_expired_form", None)
     form = ContactForm(data=expired_form) if expired_form else ContactForm()
 
-    if request.method == 'POST':
-        # receive/validate format
-        if form.validate_on_submit():
-            DATABASE = app.config['DATABASE']
-            captcha_passed = verify_turnstile(request.form.get('cf-turnstile-response', ''),
-                                              secret=app.config['TURNSTILE_SECRET_KEY'],
-                                              remoteip=client_ip())
-            # store form contents in databases, flagging spam rather than dropping it
-            person_id = DATABASE.store_person(name=form.name.data,
-                                              email=form.email.data)
-            message_id = DATABASE.store_message_text(person_id=person_id,
-                                                     message_text=form.message.data,
-                                                     captcha_passed=captcha_passed)
-            app.logger.info(f"Contact message {message_id} stored, captcha_passed={captcha_passed}")
-            # Don't send email notification if flagged as spam [still saved in db]
-            if captcha_passed:
-                send_contact_email_async(app._get_current_object(),   # ty: ignore[unresolved-attribute]
-                                         message_id=message_id,
-                                         contact_email=form.email.data,
-                                         contact_name=form.name.data,
-                                         message_body=form.message.data)
-            # send myself text message
+    if request.method == "POST" and form.validate_on_submit():
+        DATABASE = app.config["DATABASE"]
+        captcha_passed = verify_turnstile(
+            request.form.get("cf-turnstile-response", ""),
+            secret=app.config["TURNSTILE_SECRET_KEY"],
+            remoteip=client_ip(),
+        )
+        # store form contents in databases, flagging spam rather than dropping it
+        person_id = DATABASE.store_person(name=form.name.data, email=form.email.data)
+        message_id = DATABASE.store_message_text(
+            person_id=person_id,
+            message_text=form.message.data,
+            captcha_passed=captcha_passed,
+        )
+        app.logger.info(
+            f"Contact message {message_id} stored, captcha_passed={captcha_passed}"
+        )
+        # Don't send email notification if flagged as spam [still saved in db]
+        if captcha_passed:
+            send_contact_email_async(
+                app._get_current_object(),  # ty: ignore[missing-attribute]
+                message_id=message_id,
+                contact_email=form.email.data,
+                contact_name=form.name.data,
+                message_body=form.message.data,
+            )
+        # send myself text message
 
-            flash("success message", 'successful_submission')
-            return redirect(url_for('my_site.contact'))
-    return render_template('contact.html', form=form)
+        flash("success message", "successful_submission")
+        return redirect(url_for("my_site.contact"))
+    return render_template("contact.html", form=form)
 
 
-@bp.route('/about/', methods=['GET'])
+@bp.route("/about/", methods=["GET"])
 def about():
     """About page."""
-    return render_template('about.html')
+    return render_template("about.html")
 
 
-RESUME_FILENAME = 'David_Antonini_resume'
-RESUME_FORMATS = {'pdf', 'md'}
+RESUME_FILENAME = "David_Antonini_resume"
+RESUME_FORMATS = {"pdf", "md"}
 
 
-@bp.route('/resume/', methods=['GET'])
+@bp.route("/resume/", methods=["GET"])
 def resume():
     """Resume defaults to PDF."""
-    return redirect(url_for('my_site.resume_file', fmt='pdf'))
+    return redirect(url_for("my_site.resume_file", fmt="pdf"))
 
 
-@bp.route('/resume/<fmt>', methods=['GET'])
+@bp.route("/resume/<fmt>", methods=["GET"])
 def resume_file(fmt: str):
     """
     Serve the latest resume build in the given format.
@@ -125,13 +132,15 @@ def resume_file(fmt: str):
     """
     if fmt not in RESUME_FORMATS:
         abort(404)
-    response = send_from_directory(app.config['RESUME_DIR'],
-                                   f'{RESUME_FILENAME}.{fmt}',
-                                   as_attachment=fmt != 'pdf',  # pdf displays in the browser by default, .md downloads.
-                                   )
+    response = send_from_directory(
+        app.config["RESUME_DIR"],
+        f"{RESUME_FILENAME}.{fmt}",
+        as_attachment=fmt
+        != "pdf",  # pdf displays in the browser by default, .md downloads.
+    )
     # Sent as a header rather than disallowed in robots.txt: crawlers never fetch
     # a disallowed URL, so they'd never see the noindex and could still list it.
-    response.headers['X-Robots-Tag'] = 'noindex, nofollow, noarchive'
+    response.headers["X-Robots-Tag"] = "noindex, nofollow, noarchive"
     return response
 
 
@@ -145,11 +154,12 @@ def handle_csrf_error(e):
     """
     app.logger.warning(f"CSRF error on {request.path}: {e.description}")
     if request.form:
-        session['_expired_form'] = {k: v for k, v in request.form.items() if k != 'csrf_token'}
-    flash("Your session expired. Please try again.", 'error')
-    return redirect(url_for(f'my_site.{request.path[1:-1]}'))
+        session["_expired_form"] = {
+            k: v for k, v in request.form.items() if k != "csrf_token"
+        }
+    flash("Your session expired. Please try again.", "error")
+    return redirect(url_for(f"my_site.{request.path[1:-1]}"))
 
 
-
-if __name__ == '__main__':
+if __name__ == "__main__":
     app.run()

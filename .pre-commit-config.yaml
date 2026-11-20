@@ -1,12 +1,20 @@
 repos:
-  - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.11.13
+  - repo: local
     hooks:
       - id: ruff
-        args: [--fix]
-      - id: ruff-format
+        name: ruff
+        entry: uv run ruff check --fix
+        language: system
+        types_or: [python, markdown]
 
-  - repo: https://github.com/astral-sh/ty-pre-commit
-    rev: v0.0.1a14
-    hooks:
+      - id: ruff-format
+        name: ruff-format
+        entry: uv run ruff format
+        language: system
+        types_or: [python, markdown]
+
       - id: ty
+        name: ty
+        entry: uv run ty check toonarmycaptain_website/
+        language: system
+        pass_filenames: false
