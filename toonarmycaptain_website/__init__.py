@@ -64,6 +64,11 @@ def create_app(test_config: dict | None = None) -> Flask:
     def blog_url() -> dict:
         return {"blog_url": app.config["BLOG_URL"]}
 
+    @app.after_request
+    def clacks_overhead(response):
+        response.headers["X-Clacks-Overhead"] = "GNU Terry Pratchett"
+        return response
+
     @app.route("/about-text/")
     def about_text() -> bytes:
         """
